@@ -1,7 +1,7 @@
 # WRTL - WinRemoteTelldusLive
 
 Easily control your TelldusLive devices from any computer and windows task bar.
-
+Settings file auto created and located in local folder.
 
 Need following form [https://api.telldus.com](https://api.telldus.com) to work!
 ### Key, Public Key, Token and Token Secret 
