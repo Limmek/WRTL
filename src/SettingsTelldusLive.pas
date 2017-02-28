@@ -22,8 +22,10 @@ const
     ABOUT_INFO = 'This application is used to call the TelldusLive API and remotely control your devices from any computer.';
 
     LOGFILE_EXT ='.txt';
+    LOGFILE_FOLDER ='logs/';
     CONFIG_EXT='.ini';
     DEVICES_LIST_FILE = 'DeviceList.ini';
+    SCHEDULE_FILE ='ScheduleList.ini';
 var
     LOGGING: Boolean;
 

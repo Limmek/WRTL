@@ -403,12 +403,16 @@ object FormSettings: TFormSettings
       Caption = 'About'
       ImageIndex = 2
       OnShow = TabSheet2Show
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object ImageGit: TImage
         AlignWithMargins = True
         Left = 201
         Top = 3
         Width = 100
-        Height = 104
+        Height = 100
         Margins.Right = 5
         Align = alRight
         AutoSize = True
@@ -482,9 +486,9 @@ object FormSettings: TFormSettings
       end
       object LabelGit: TLabel
         AlignWithMargins = True
-        Left = 5
+        Left = 196
         Top = 110
-        Width = 296
+        Width = 105
         Height = 14
         Margins.Left = 5
         Margins.Top = 0
@@ -500,8 +504,6 @@ object FormSettings: TFormSettings
         Font.Style = []
         ParentFont = False
         OnClick = LabelGitClick
-        ExplicitLeft = 196
-        ExplicitWidth = 105
       end
       object LabelAuthor: TLabel
         Left = 3
@@ -522,7 +524,7 @@ object FormSettings: TFormSettings
         Left = 5
         Top = 5
         Width = 198
-        Height = 100
+        Height = 52
         Margins.Left = 5
         Margins.Top = 5
         Margins.Right = 5
@@ -538,7 +540,6 @@ object FormSettings: TFormSettings
         Font.Style = []
         ParentFont = False
         WordWrap = True
-        ExplicitHeight = 52
       end
     end
   end

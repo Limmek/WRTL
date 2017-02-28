@@ -116,8 +116,8 @@ end;
 
 procedure TFormSettings.ImageLogFileClick(Sender: TObject);
 begin
-  if CheckBox_LogToFile.Checked and FileExists(LocalAppDataConfigPath+DateToStr(now)+LOGFILE_EXT) then  begin
-    ShellExecute(Application.Handle, 'open', 'notepad.exe', PChar(LocalAppDataConfigPath+DateToStr(now)+LOGFILE_EXT), nil, SW_NORMAL);
+  if CheckBox_LogToFile.Checked and FileExists(LocalAppDataConfigPath+LOGFILE_FOLDER+DateToStr(now)+LOGFILE_EXT) then  begin
+    ShellExecute(Application.Handle, 'open', 'notepad.exe', PChar(LocalAppDataConfigPath+LOGFILE_FOLDER+DateToStr(now)+LOGFILE_EXT), nil, SW_NORMAL);
   end
   else
     ShowMessage('Enable logging first!');

@@ -56,14 +56,14 @@ begin
       //Result := copy(FormMain.listbox1.items[FormMain.listbox1.itemindex],4,9)
       s:= FormMain.listbox1.items[FormMain.listbox1.itemindex];
       s:= ExtractText(s,':','/');
-      FormMain.Memo1.Lines.Add(s);
+      //FormMain.Memo1.Lines.Add(s);
       Result := s;
     end
     else  begin
       //Result := copy(FormMain.listbox2.items[FormMain.listbox2.itemindex],4,9);
       s:= FormMain.listbox2.items[FormMain.listbox2.itemindex];
       s:= ExtractText(s,':','/');
-      FormMain.Memo1.Lines.Add(s);
+      //FormMain.Memo1.Lines.Add(s);
       Result := s;
     end;
 end;
@@ -76,14 +76,14 @@ begin
       //Result := copy(FormMain.listbox1.items[FormMain.listbox1.itemindex],4,9)
       s:= FormMain.listbox1.items[FormMain.listbox1.itemindex];
       s:= ExtractText(s,'/','.');
-      FormMain.Memo1.Lines.Add(s);
+      //FormMain.Memo1.Lines.Add(s);
       Result := s;
     end
     else  begin
       //Result := copy(FormMain.listbox2.items[FormMain.listbox2.itemindex],4,9);
       s:= FormMain.listbox2.items[FormMain.listbox2.itemindex];
       s:= ExtractText(s,'/','.');
-      FormMain.Memo1.Lines.Add(s);
+      //FormMain.Memo1.Lines.Add(s);
       Result := s;
     end;
 end;

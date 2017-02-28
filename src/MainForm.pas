@@ -120,15 +120,17 @@ var
   buttonSelected : Integer;
   fixedCaption, fixedID, fixedName: String;
 
+
+
 procedure TFormMain.PopupClickAPICommand(Sender: TObject);
 begin
     fixedCaption := ExtractText(FormMain.ListBox2.Items[TMenuItem(Sender).MenuIndex],':','/');
     fixedID := StringReplace(fixedCaption,' ','',[rfReplaceAll, rfIgnoreCase]);
     fixedName := ExtractText(FormMain.ListBox2.Items[TMenuItem(Sender).MenuIndex],'/','.');
-    buttonSelected := MessageDlg('Enable or Disable ID: '+fixedID,mtCustom,
+    buttonSelected := MessageDlg('Enable or Disable '+fixedName,mtCustom,
                               [mbYes,mbNo], 0);
     if buttonSelected = mrYes    then begin
-      ConsoleNewMessage('ID: '+fixedID+' Enabled');
+      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
       FormMain.RESTRequest1.Params.AddItem('id',fixedID);
       FormMain.RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
       FormMain.RESTRequest1.Execute;
@@ -138,7 +140,7 @@ begin
     end;
 
     if buttonSelected = mrNo    then  begin
-      ConsoleNewMessage('ID: '+fixedID+' Disabled');
+      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
       FormMain.RESTRequest1.Params.AddItem('id',fixedID);
       FormMain.RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
       FormMain.RESTRequest1.Execute;
@@ -198,12 +200,17 @@ end;
 
 procedure TFormMain.Button1Click(Sender: TObject);
 begin
+  try
   if ComboBox1.Text='' then
     Panel2.Caption := 'Load devices first!'
   else  begin
     if StrToInt(ComboBox3.Text) <= 9 then
       ComboBox3.Text := ZeroFixTime(TrimLeadingZeros(ComboBox3.Text));
     LineAdd(StringGrid1,1);
+  end;
+  finally
+    StringGrid2File(StringGrid1,LocalAppDataConfigPath+SCHEDULE_FILE);
+    ConsoleMessage('Added '+ComboBox3.Text+' to '+SCHEDULE_FILE);
   end;
 end;
 
@@ -281,8 +288,8 @@ begin
     ComboBox3.Items.Add(ZeroFixTime(I.ToString));
 
   //ComboBox1.Text := ListBox2.Items[0];
-  ComboBox2.Text := '12';
-  ComboBox3.Text := '00';
+  //ComboBox2.Text := '12';
+  //ComboBox3.Text := '00';
   ComboBox4.Text := ComboBox4.Items[0];
   PageControl1.ActivePageIndex :=0;
   PageControl2.ActivePageIndex :=1;
@@ -306,6 +313,17 @@ begin
       PopupMenu1.Items.Add(Item);
       ConsoleMessage('Added: '+Item.Caption);
     end;
+    ConsoleMessage(x.ToString+' devices loaded.');
+  end;
+  ConsoleMessage('Looking for schedule list:');
+  ConsoleMessage(LocalAppDataConfigPath+SCHEDULE_FILE);
+  if not fileexists(LocalAppDataConfigPath+SCHEDULE_FILE) then begin
+    StringGrid2File(StringGrid1,LocalAppDataConfigPath+SCHEDULE_FILE);
+    ConsoleMessage('Faild load '+SCHEDULE_FILE+' creating new..');
+  end
+  else begin
+    File2StringGrid(StringGrid1,LocalAppDataConfigPath+SCHEDULE_FILE);
+    ConsoleMessage('Loaded '+SCHEDULE_FILE);
   end;
 end;
 
@@ -319,6 +337,7 @@ begin
   TrayIcon1.Destroy;
   NotificationCenter1.Destroy;
   ListBox2.Items.SaveToFile(LocalAppDataConfigPath+DEVICES_LIST_FILE);
+  StringGrid2File(StringGrid1,LocalAppDataConfigPath+SCHEDULE_FILE);
 end;
 
 procedure TFormMain.FormResize(Sender: TObject);
@@ -354,7 +373,7 @@ begin
     RESTRequest1.Params.AddItem('id',fixedID);
     RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
     RESTRequest1.Execute;
-    ConsoleNewMessage('ID: '+fixedID+' Disabled');
+    ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
     ConsoleMessage(RESTResponse1.JSONText);
     if FormSettings.CheckBox_WinNotification.Checked then
       RunNotification(fixedName+' Disabled');
@@ -379,7 +398,7 @@ begin
     RESTRequest1.Params.AddItem('id',fixedID);
     RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
     RESTRequest1.Execute;
-    ConsoleNewMessage('ID: '+fixedID+' Enabled');
+    ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
     ConsoleMessage(RESTResponse1.JSONText);
     if FormSettings.CheckBox_WinNotification.Checked then
       RunNotification(fixedName+' Enabled');
@@ -451,10 +470,10 @@ procedure TFormMain.ListBox1DblClick(Sender: TObject);
 begin
     fixedID := StringReplace(SelectedTabbItemID,' ','',[rfReplaceAll, rfIgnoreCase]);
     fixedName := StringReplace(SelectedTabbItemName,' ','',[rfReplaceAll, rfIgnoreCase]);
-    buttonSelected := MessageDlg('Chose what to do with '+fixedID,mtCustom,
+    buttonSelected := MessageDlg('Chose what to do with '+fixedName,mtCustom,
                               [mbYes,mbNo], 0);
     if buttonSelected = mrYes    then begin
-      ConsoleNewMessage('ID: '+fixedID+' Enabled');
+      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
       RESTRequest1.Params.AddItem('id',fixedID);
       RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
       RESTRequest1.Execute;
@@ -464,7 +483,7 @@ begin
     end;
 
     if buttonSelected = mrNo    then  begin
-      ConsoleNewMessage('ID: '+fixedID+' Disabled');
+      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
       RESTRequest1.Params.AddItem('id',fixedID);
       RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
       RESTRequest1.Execute;
@@ -486,10 +505,10 @@ procedure TFormMain.ListBox2DblClick(Sender: TObject);
 begin
     fixedID := StringReplace(SelectedTabbItemID,' ','',[rfReplaceAll, rfIgnoreCase]);
     fixedName := StringReplace(SelectedTabbItemName,' ','',[rfReplaceAll, rfIgnoreCase]);
-    buttonSelected := MessageDlg('Chose what to do with '+fixedID,mtCustom,
+    buttonSelected := MessageDlg('Chose what to do with '+fixedName,mtCustom,
                               [mbYes,mbNo], 0);
     if buttonSelected = mrYes    then begin
-      ConsoleNewMessage(fixedID+' Enabled');
+      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
       RESTRequest1.Params.AddItem('id',fixedID);
       RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
       RESTRequest1.Execute;
@@ -499,7 +518,7 @@ begin
     end;
 
     if buttonSelected = mrNo    then  begin
-      ConsoleNewMessage(fixedID+' Disabled');
+      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
       RESTRequest1.Params.AddItem('id',fixedID);
       RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
       RESTRequest1.Execute;
@@ -554,17 +573,17 @@ begin
           RESTRequest1.Params.AddItem('id',fixedID);
           RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
           RESTRequest1.Execute;
-          ConsoleNewMessage(fixedName+' Enabled');
+          ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
           ConsoleMessage(RESTResponse1.JSONText);
-          //if FormSettings.CheckBox_WinNotification.Checked then
+          if FormSettings.CheckBox_WinNotification.Checked then
           RunNotification(fixedName+' Enabled');
         end else if StringGrid1.Cells[2,iRow]='OFF' then begin
           RESTRequest1.Params.AddItem('id',fixedID);
           RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
           RESTRequest1.Execute;
-          ConsoleNewMessage(fixedName+' Disabled');
+          ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
           ConsoleMessage(RESTResponse1.JSONText);
-          //if FormSettings.CheckBox_WinNotification.Checked then
+          if FormSettings.CheckBox_WinNotification.Checked then
           RunNotification(fixedName+' Disabled');
         end;
       end;

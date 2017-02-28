@@ -15,13 +15,16 @@ procedure WriteConfig;
 procedure ReadConfig;
 procedure LoadSensorer;
 procedure LoadDevices;
-procedure RunOnStartup(WindowTitle,CommandLn  : String; RunOnlyOnce: Boolean);
-procedure RemoveOnStartup(WindowTitle,CommandLn  : String; RunOnlyOnce: Boolean);
-procedure ConsoleMessage(msg:String);
-procedure ConsoleNewMessage(msg:String);
+procedure RunOnStartup(WindowTitle,CommandLn: String; RunOnlyOnce: Boolean);
+procedure RemoveOnStartup(WindowTitle,CommandLn: String; RunOnlyOnce: Boolean);
+procedure ConsoleMessage(msg: String);
+procedure ConsoleNewMessage(msg: String);
 procedure Log(const Msg: string); overload;
 procedure RunNotification(AlertMsg:String);
 procedure DeleteCurrentRow(Grid: TStringGrid);
+
+procedure StringGrid2File(StringGrid: TStringGrid; FileName: String);
+procedure File2StringGrid(StringGrid: TStringGrid; FileName: String);
 
 implementation
 
@@ -31,6 +34,43 @@ var
   JSONArray: TJSONArray;
   //JSONValue : TJSONValue;
   devices: TJSONObject;
+
+procedure StringGrid2File(StringGrid: TStringGrid; FileName: String);
+var
+  F: TextFile;
+  x, y: Integer;
+begin
+  AssignFile(F, FileName);
+  Rewrite(F);
+  Writeln(F, StringGrid.ColCount);
+  Writeln(F, StringGrid.RowCount);
+  for x:=0 to StringGrid.ColCount-1 do
+    for y:=0 to StringGrid.RowCount-1 do
+      Writeln(F, StringGrid.Cells[x,y]);
+  CloseFile(F);
+end;
+
+procedure File2StringGrid(StringGrid: TStringGrid; FileName: String);
+var
+  F: TextFile;
+  Tmp, x, y: Integer;
+  TmpStr: string;
+begin
+  AssignFile(F, FileName);
+  Reset(F);
+  Readln(F, Tmp);
+  StringGrid.ColCount:=Tmp;
+  Readln(F, Tmp);
+  StringGrid.RowCount:=Tmp;
+  for x:=0 to StringGrid.ColCount-1 do
+    for y:=0 to StringGrid.RowCount-1 do
+    begin
+      Readln(F, TmpStr);
+      StringGrid.Cells[x,y]:=TmpStr;
+    end;
+  CloseFile(F);
+end;
+
 
 procedure DeleteCurrentRow(Grid: TStringGrid);
 var
@@ -65,7 +105,9 @@ procedure Log(const Msg: string); overload;
 var
   F: TextFile;
 begin
-    AssignFile(F, LocalAppDataConfigPath+DateToStr(now)+LOGFILE_EXT);
+    if not FileExists(LocalAppDataConfigPath+LOGFILE_FOLDER+DateToStr(now)+LOGFILE_EXT) then
+      CreateDir(LocalAppDataConfigPath+LOGFILE_FOLDER);
+    AssignFile(F, LocalAppDataConfigPath+LOGFILE_FOLDER+DateToStr(now)+LOGFILE_EXT);
     // Try to append to the file, which succeeds only if the file exists.
   {$IoChecks Off}
     Append(F);

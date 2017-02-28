@@ -96,7 +96,7 @@ object FormMain: TFormMain
         Margins.Top = 1
         Margins.Right = 0
         Margins.Bottom = 0
-        ActivePage = TabSheet1
+        ActivePage = TabSheet2
         Align = alClient
         Style = tsButtons
         TabOrder = 1
@@ -597,6 +597,7 @@ object FormMain: TFormMain
     Client = RESTClient1
     Params = <>
     Response = RESTResponse1
+    Timeout = 4000
     SynchronizedEvents = False
     Left = 400
     Top = 224
