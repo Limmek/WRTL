@@ -28,8 +28,8 @@ If you having any issues run the app as admin (Right click->WinRemoteTellduslive
 ![alt text](https://github.com/Limmek/WRTL/blob/master/images/systray.jpg "WinRemoteTelldusLive")
 ------
 
-Tested on 
-**Windows 10** -64-bit
-**Windows Server 2012R2** -64-bit
+####Tested on 
+* **Windows 10** -64-bit
+* **Windows Server 2012R2** -64-bit
 
 It should work on **windows 7** and lower with **notifications Disabled** this is however not tested!
