@@ -1,9 +1,10 @@
 # WRTL - WinRemoteTelldusLive
-Easily control your TelldusLive devices from any computer and windows task bar.
+Easily control your TelldusLive devices from any computer.
+Supports scheduled actions and fast access from windows task bar.
 
 ------
-Need following Private Key, Public Key, Token and Token Secret to work! 
-[https://api.telldus.com](https://api.telldus.com)
+Need following Private Key, Public Key, Token and Token Secret to work. 
+[api.telldus.com](https://api.telldus.com)
 ------
 
 ### Features 
