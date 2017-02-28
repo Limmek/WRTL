@@ -7,7 +7,7 @@ Necessary files auto created in windows local folder and easily accessed from se
 
 
 ------
-Need following Private Key, Public Key, Token and Token Secret to work.
+Need following **Private Key**, **Public Key**, **Token** and **Token Secret** to work.
 Get it from [api.telldus.com](https://api.telldus.com)
 ------
 
