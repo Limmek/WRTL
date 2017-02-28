@@ -3,8 +3,11 @@ Easily control your TelldusLive devices from any computer.
 
 Supports scheduled actions and fast access from windows task bar.
 
+Necessary files auto created in windows local folder and easily accessed from settings.
+
+
 ------
-Need following Private Key, Public Key, Token and Token Secret to work. 
+Need following Private Key, Public Key, Token and Token Secret to work.
 [api.telldus.com](https://api.telldus.com)
 ------
 
@@ -15,6 +18,8 @@ Need following Private Key, Public Key, Token and Token Secret to work.
 * Start app with windows.
 * Start app minimized.
 * Enable logging.
+
+If you having any issues run the app as admin (Right click->WinRemoteTellduslive.exe->Run as admin).
 
 ------
 ![alt text](https://github.com/Limmek/WRTL/blob/master/images/wrtl.gif "WinRemoteTelldusLive")
