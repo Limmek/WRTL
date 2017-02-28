@@ -18,7 +18,7 @@ const
     DEVICE_ON = '/device/turnOn';
     DEVICE_OFF = '/device/turnOff';
 
-    ABOUT_GIT = 'https://github.com/Limmek';
+    ABOUT_GIT = 'https://github.com/Limmek/WRTL';
     ABOUT_INFO = 'This application is used to call the TelldusLive API and remotely control your devices from any computer.';
 
     LOGFILE_EXT ='.txt';

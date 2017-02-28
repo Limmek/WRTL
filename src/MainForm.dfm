@@ -3,7 +3,7 @@ object FormMain: TFormMain
   Top = 0
   Caption = 'WinRemoteTelldusLive'
   ClientHeight = 271
-  ClientWidth = 464
+  ClientWidth = 554
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,7 +21,7 @@ object FormMain: TFormMain
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 464
+    Width = 554
     Height = 219
     Align = alClient
     BevelOuter = bvNone
@@ -109,6 +109,10 @@ object FormMain: TFormMain
             Top = 0
             Width = 159
             Height = 160
+            Margins.Left = 0
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 0
             Align = alClient
             BorderStyle = bsNone
             ItemHeight = 13
@@ -136,28 +140,167 @@ object FormMain: TFormMain
         end
       end
     end
-    object Memo1: TMemo
+    object PageControl2: TPageControl
       AlignWithMargins = True
-      Left = 172
-      Top = 5
-      Width = 287
-      Height = 209
-      Margins.Left = 5
-      Margins.Top = 5
-      Margins.Right = 5
-      Margins.Bottom = 5
+      Left = 167
+      Top = 1
+      Width = 387
+      Height = 218
+      Margins.Left = 0
+      Margins.Top = 1
+      Margins.Right = 0
+      Margins.Bottom = 0
+      ActivePage = TabSheet4
       Align = alClient
-      BevelInner = bvNone
-      BevelOuter = bvNone
-      BorderStyle = bsNone
-      ReadOnly = True
       TabOrder = 1
+      object TabSheet3: TTabSheet
+        Caption = 'Console'
+        object Memo1: TMemo
+          AlignWithMargins = True
+          Left = 5
+          Top = 5
+          Width = 369
+          Height = 180
+          Margins.Left = 5
+          Margins.Top = 5
+          Margins.Right = 5
+          Margins.Bottom = 5
+          Align = alClient
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          BorderStyle = bsNone
+          ReadOnly = True
+          TabOrder = 0
+        end
+      end
+      object TabSheet4: TTabSheet
+        Caption = 'Schedule'
+        ImageIndex = 1
+        object StringGrid1: TStringGrid
+          AlignWithMargins = True
+          Left = 0
+          Top = 0
+          Width = 379
+          Height = 165
+          Margins.Left = 0
+          Margins.Top = 0
+          Margins.Right = 0
+          Margins.Bottom = 0
+          TabStop = False
+          Align = alClient
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          BorderStyle = bsNone
+          ColCount = 3
+          DefaultColWidth = 40
+          FixedCols = 0
+          RowCount = 2
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSizing, goColSizing, goEditing, goTabs]
+          TabOrder = 0
+          OnDblClick = StringGrid1DblClick
+          ColWidths = (
+            235
+            80
+            62)
+          RowHeights = (
+            24
+            24)
+        end
+        object Panel5: TPanel
+          Left = 0
+          Top = 165
+          Width = 379
+          Height = 25
+          Align = alBottom
+          BevelOuter = bvNone
+          TabOrder = 1
+          object Label1: TLabel
+            Left = 203
+            Top = 6
+            Width = 4
+            Height = 14
+            Caption = ':'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object ComboBox1: TComboBox
+            Left = 0
+            Top = 3
+            Width = 140
+            Height = 21
+            TabOrder = 0
+          end
+          object Button1: TButton
+            Left = 320
+            Top = 2
+            Width = 60
+            Height = 23
+            Caption = 'Add new'
+            TabOrder = 6
+            OnClick = Button1Click
+          end
+          object ComboBox4: TComboBox
+            Left = 269
+            Top = 3
+            Width = 50
+            Height = 21
+            TabOrder = 5
+            Text = 'ON'
+            Items.Strings = (
+              'ON'
+              'OFF')
+          end
+          object ComboBox2: TComboBox
+            Left = 144
+            Top = 3
+            Width = 40
+            Height = 21
+            AutoDropDown = True
+            TabOrder = 1
+            Text = '12'
+          end
+          object UpDown1: TUpDown
+            Left = 184
+            Top = 3
+            Width = 18
+            Height = 21
+            Margins.Left = 5
+            Margins.Right = 5
+            Associate = ComboBox2
+            Position = 12
+            TabOrder = 2
+          end
+          object UpDown2: TUpDown
+            Left = 249
+            Top = 3
+            Width = 18
+            Height = 21
+            Associate = ComboBox3
+            DoubleBuffered = False
+            ParentDoubleBuffered = False
+            TabOrder = 4
+          end
+          object ComboBox3: TComboBox
+            Left = 209
+            Top = 3
+            Width = 40
+            Height = 21
+            AutoDropDown = True
+            TabOrder = 3
+            Text = '0'
+          end
+        end
+      end
     end
   end
   object Panel2: TPanel
     Left = 0
     Top = 219
-    Width = 464
+    Width = 554
     Height = 52
     Margins.Left = 2
     Margins.Top = 2
@@ -289,7 +432,7 @@ object FormMain: TFormMain
     end
     object ImageEnable: TImage
       AlignWithMargins = True
-      Left = 361
+      Left = 451
       Top = 0
       Width = 50
       Height = 51
@@ -387,7 +530,7 @@ object FormMain: TFormMain
     end
     object ImageDisable: TImage
       AlignWithMargins = True
-      Left = 411
+      Left = 501
       Top = 0
       Width = 50
       Height = 51
@@ -436,39 +579,44 @@ object FormMain: TFormMain
     PopupMenu = PopupMenu1
     Visible = True
     OnDblClick = TrayIcon1DblClick
-    Left = 368
-    Top = 162
+    Left = 40
+    Top = 82
   end
   object PopupMenu1: TPopupMenu
-    Left = 224
-    Top = 162
+    Left = 112
+    Top = 138
   end
   object RESTClient1: TRESTClient
     Authenticator = OAuth1Authenticator1
     Params = <>
     HandleRedirects = True
-    Left = 368
-    Top = 80
+    Left = 176
+    Top = 224
   end
   object RESTRequest1: TRESTRequest
     Client = RESTClient1
     Params = <>
     Response = RESTResponse1
     SynchronizedEvents = False
-    Left = 224
-    Top = 80
+    Left = 400
+    Top = 224
   end
   object RESTResponse1: TRESTResponse
-    Left = 368
-    Top = 16
+    Left = 328
+    Top = 224
   end
   object OAuth1Authenticator1: TOAuth1Authenticator
     OnAuthenticate = OAuth1Authenticator1Authenticate
-    Left = 224
-    Top = 16
+    Left = 248
+    Top = 224
   end
   object NotificationCenter1: TNotificationCenter
-    Left = 296
-    Top = 120
+    Left = 40
+    Top = 136
+  end
+  object Timer1: TTimer
+    OnTimer = Timer1Timer
+    Left = 116
+    Top = 84
   end
 end

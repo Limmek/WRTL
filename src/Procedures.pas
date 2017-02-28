@@ -21,6 +21,7 @@ procedure ConsoleMessage(msg:String);
 procedure ConsoleNewMessage(msg:String);
 procedure Log(const Msg: string); overload;
 procedure RunNotification(AlertMsg:String);
+procedure DeleteCurrentRow(Grid: TStringGrid);
 
 implementation
 
@@ -30,6 +31,15 @@ var
   JSONArray: TJSONArray;
   //JSONValue : TJSONValue;
   devices: TJSONObject;
+
+procedure DeleteCurrentRow(Grid: TStringGrid);
+var
+  i: Integer;
+begin
+  for i := Grid.Row to Grid.RowCount - 2 do
+    Grid.Rows[i].Assign(Grid.Rows[i + 1]);
+  Grid.RowCount := Grid.RowCount - 1;
+end;
 
 procedure RunNotification(AlertMsg:String);
 var
@@ -174,6 +184,7 @@ begin
   ConsoleNewMessage(FormMain.RESTResponse1.JSONText);
   FormMain.Memo1.ScrollBars := ssVertical;
   FormMain.ListBox1.Clear;
+  FormMain.Panel2.Caption :='';
   JSONObject := nil;
 
   { convert String to JSON }
@@ -185,13 +196,14 @@ begin
       for idx := 0 to pred(JSONArray.Count) do begin
         //devices := TJSONObject(JSONArray.Get(idx));
         devices := TJSONObject(JSONArray.Items[idx]);
-        FormMain.ListBox1.Items.Add('id: '+ devices.GetValue<string>('id') + ' name: '+ devices.GetValue<string>('name'));
+        FormMain.ListBox1.Items.Add('id:' + devices.GetValue<string>('id') + '/ '+ devices.GetValue<string>('name')+'.');
+        FormMain.ComboBox1.Items.Add('id:' + devices.GetValue<string>('id') + '/ '+ devices.GetValue<string>('name')+'.');
         //FormMain.ListBox1.Items.Add(devices.GetValue<string>('id'));
         //for idy := 0 to pred(devices.Count) do begin
           //ConsoleMessage( devices.Pairs[idy].JsonString.ToString + ':' + devices.Pairs[idy].JsonValue.ToString );
         //end;
       end;
-
+      FormMain.ComboBox1.Text:=(FormMain.ListBox1.Items[0]);
   finally
     JSONObject.Free;
   end;

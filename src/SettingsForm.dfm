@@ -17,6 +17,23 @@ object FormSettings: TFormSettings
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object Label5: TLabel
+    Left = 160
+    Top = 180
+    Width = 124
+    Height = 14
+    Hint = 'Klick to open'
+    Caption = 'https://api.telldus.com'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clHighlight
+    Font.Height = -12
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    OnClick = Label5Click
+  end
   object Panel1: TPanel
     Left = 0
     Top = 0
@@ -26,8 +43,6 @@ object FormSettings: TFormSettings
     BevelOuter = bvNone
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 349
-    ExplicitHeight = 178
     object Label1: TLabel
       AlignWithMargins = True
       Left = 3
@@ -49,7 +64,7 @@ object FormSettings: TFormSettings
     object Label2: TLabel
       AlignWithMargins = True
       Left = 3
-      Top = 47
+      Top = 48
       Width = 308
       Height = 13
       Align = alTop
@@ -61,13 +76,12 @@ object FormSettings: TFormSettings
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitTop = 48
       ExplicitWidth = 65
     end
     object Label3: TLabel
       AlignWithMargins = True
       Left = 3
-      Top = 89
+      Top = 91
       Width = 308
       Height = 13
       Align = alTop
@@ -79,13 +93,12 @@ object FormSettings: TFormSettings
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitTop = 91
       ExplicitWidth = 35
     end
     object Label4: TLabel
       AlignWithMargins = True
       Left = 3
-      Top = 131
+      Top = 134
       Width = 308
       Height = 13
       Align = alTop
@@ -97,7 +110,6 @@ object FormSettings: TFormSettings
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitTop = 134
       ExplicitWidth = 74
     end
     object Edit_PUBLIC_KEY: TEdit
@@ -105,7 +117,7 @@ object FormSettings: TFormSettings
       Left = 20
       Top = 21
       Width = 274
-      Height = 20
+      Height = 21
       Margins.Left = 20
       Margins.Top = 0
       Margins.Right = 20
@@ -116,9 +128,9 @@ object FormSettings: TFormSettings
     object Edit_PRIVATE_KEY: TEdit
       AlignWithMargins = True
       Left = 20
-      Top = 63
+      Top = 64
       Width = 274
-      Height = 20
+      Height = 21
       Margins.Left = 20
       Margins.Top = 0
       Margins.Right = 20
@@ -129,9 +141,9 @@ object FormSettings: TFormSettings
     object Edit_TOKEN_SECRET: TEdit
       AlignWithMargins = True
       Left = 20
-      Top = 147
+      Top = 150
       Width = 274
-      Height = 20
+      Height = 21
       Margins.Left = 20
       Margins.Top = 0
       Margins.Right = 20
@@ -142,9 +154,9 @@ object FormSettings: TFormSettings
     object Edit_TOKEN: TEdit
       AlignWithMargins = True
       Left = 20
-      Top = 105
+      Top = 107
       Width = 274
-      Height = 20
+      Height = 21
       Margins.Left = 20
       Margins.Top = 0
       Margins.Right = 20
@@ -162,8 +174,6 @@ object FormSettings: TFormSettings
     BevelOuter = bvNone
     ParentBackground = False
     TabOrder = 1
-    ExplicitTop = 328
-    ExplicitWidth = 349
     object ImageLocalFolder: TImage
       AlignWithMargins = True
       Left = 264
@@ -312,11 +322,8 @@ object FormSettings: TFormSettings
     ParentFont = False
     TabOrder = 2
     StyleElements = [seFont, seClient]
-    ExplicitWidth = 349
     object TabSheet1: TTabSheet
       Caption = 'Default Settings'
-      ExplicitWidth = 341
-      ExplicitHeight = 121
       object CheckBox_AutoLoadDevices: TCheckBox
         AlignWithMargins = True
         Left = 15
@@ -330,8 +337,6 @@ object FormSettings: TFormSettings
         Align = alTop
         Caption = 'Auto load devices on application start'
         TabOrder = 0
-        ExplicitTop = 10
-        ExplicitWidth = 311
       end
       object CheckBox_SartWithWindows: TCheckBox
         AlignWithMargins = True
@@ -346,8 +351,6 @@ object FormSettings: TFormSettings
         Align = alTop
         Caption = 'Autorun at windows start'
         TabOrder = 1
-        ExplicitTop = 36
-        ExplicitWidth = 311
       end
       object CheckBox_StartMinimized: TCheckBox
         AlignWithMargins = True
@@ -362,8 +365,6 @@ object FormSettings: TFormSettings
         Align = alTop
         Caption = 'Start minimized'
         TabOrder = 2
-        ExplicitTop = 62
-        ExplicitWidth = 311
       end
       object CheckBox_WinNotification: TCheckBox
         AlignWithMargins = True
@@ -378,8 +379,6 @@ object FormSettings: TFormSettings
         Align = alTop
         Caption = 'Enable windows notifications'
         TabOrder = 3
-        ExplicitTop = 88
-        ExplicitWidth = 311
       end
       object CheckBox_LogToFile: TCheckBox
         AlignWithMargins = True
@@ -394,8 +393,6 @@ object FormSettings: TFormSettings
         Align = alTop
         Caption = 'Enable logging'
         TabOrder = 4
-        ExplicitTop = 88
-        ExplicitWidth = 311
       end
     end
     object TabSheet2: TTabSheet
@@ -406,8 +403,6 @@ object FormSettings: TFormSettings
       Caption = 'About'
       ImageIndex = 2
       OnShow = TabSheet2Show
-      ExplicitWidth = 341
-      ExplicitHeight = 121
       object ImageGit: TImage
         AlignWithMargins = True
         Left = 201
@@ -498,9 +493,14 @@ object FormSettings: TFormSettings
         Align = alBottom
         Alignment = taRightJustify
         Caption = 'https://github.com'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clHighlight
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
         OnClick = LabelGitClick
-        ExplicitLeft = 231
-        ExplicitTop = 105
+        ExplicitLeft = 196
         ExplicitWidth = 105
       end
       object LabelAuthor: TLabel
@@ -521,7 +521,7 @@ object FormSettings: TFormSettings
         AlignWithMargins = True
         Left = 5
         Top = 5
-        Width = 222
+        Width = 198
         Height = 100
         Margins.Left = 5
         Margins.Top = 5
@@ -538,7 +538,7 @@ object FormSettings: TFormSettings
         Font.Style = []
         ParentFont = False
         WordWrap = True
-        ExplicitHeight = 39
+        ExplicitHeight = 52
       end
     end
   end

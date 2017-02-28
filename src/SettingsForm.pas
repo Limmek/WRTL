@@ -36,6 +36,7 @@ type
     CheckBox_WinNotification: TCheckBox;
     ImageLogFile: TImage;
     CheckBox_LogToFile: TCheckBox;
+    Label5: TLabel;
     procedure ImageLocalFolderClick(Sender: TObject);
     procedure ImageSaveClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -59,6 +60,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure ImageLocalFolderMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure Label5Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -91,6 +93,8 @@ begin
     ConsoleMessage('Loading settings');
     ReadConfig;
   end;
+  Label5.Caption:=API_URL;
+  PageControl1.ActivePageIndex :=0;
 end;
 
 procedure TFormSettings.ImageLocalFolderClick(Sender: TObject);
@@ -205,6 +209,11 @@ procedure TFormSettings.ImageSaveMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   ImageSave.Stretch := False;
+end;
+
+procedure TFormSettings.Label5Click(Sender: TObject);
+begin
+  ShellExecute(0, 'Open', PChar(API_URL), nil, nil, SW_SHOWNORMAL);
 end;
 
 procedure TFormSettings.LabelGitClick(Sender: TObject);

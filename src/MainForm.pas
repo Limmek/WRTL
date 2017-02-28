@@ -7,7 +7,8 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Menus,
   Vcl.Imaging.pngimage, Registry, Inifiles, IPPeerClient, REST.Client,
   REST.Authenticator.OAuth, Data.Bind.Components, Data.Bind.ObjectScope,
-  Vcl.ToolWin, Vcl.ComCtrls, System.Notification;
+  Vcl.ToolWin, Vcl.ComCtrls, System.Notification, Vcl.Grids,
+  Vcl.Samples.Calendar, Vcl.CheckLst, DateUtils;
 
 type
   TFormMain = class(TForm)
@@ -35,6 +36,20 @@ type
     TabSheet2: TTabSheet;
     ListBox2: TListBox;
     NotificationCenter1: TNotificationCenter;
+    PageControl2: TPageControl;
+    TabSheet3: TTabSheet;
+    TabSheet4: TTabSheet;
+    ComboBox1: TComboBox;
+    Timer1: TTimer;
+    StringGrid1: TStringGrid;
+    ComboBox4: TComboBox;
+    Button1: TButton;
+    Panel5: TPanel;
+    ComboBox2: TComboBox;
+    UpDown1: TUpDown;
+    UpDown2: TUpDown;
+    ComboBox3: TComboBox;
+    Label1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure OnMinimize(Sender:TObject);
     procedure TrayIcon1DblClick(Sender: TObject);
@@ -77,12 +92,17 @@ type
     procedure ImageDisableMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormResize(Sender: TObject);
-
+    procedure Timer1Timer(Sender: TObject);
+    procedure CheckBox1Click(Sender: TObject);
+    procedure LineAdd(aStringGrid: TStringGrid; aPos: integer);
+    procedure Button1Click(Sender: TObject);
+    procedure AutoSizeCol(Grid: TStringGrid; Column: integer);
+    procedure StringGrid1DblClick(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
-    procedure SendAPICommand(Sender: TObject);
+    procedure PopupClickAPICommand(Sender: TObject);
   end;
 
 var
@@ -98,12 +118,13 @@ var
   ConsumerKey, ConsumerSecret, AuthToken, AuthSecret, FilePath: String;
   Item: TMenuItem;
   buttonSelected : Integer;
-  fixedCaption, fixedID:String;
+  fixedCaption, fixedID, fixedName: String;
 
-procedure TFormMain.SendAPICommand(Sender: TObject);
+procedure TFormMain.PopupClickAPICommand(Sender: TObject);
 begin
-    fixedCaption := copy(FormMain.listbox2.items[TMenuItem(Sender).MenuIndex],4,9);
+    fixedCaption := ExtractText(FormMain.ListBox2.Items[TMenuItem(Sender).MenuIndex],':','/');
     fixedID := StringReplace(fixedCaption,' ','',[rfReplaceAll, rfIgnoreCase]);
+    fixedName := ExtractText(FormMain.ListBox2.Items[TMenuItem(Sender).MenuIndex],'/','.');
     buttonSelected := MessageDlg('Enable or Disable ID: '+fixedID,mtCustom,
                               [mbYes,mbNo], 0);
     if buttonSelected = mrYes    then begin
@@ -113,7 +134,7 @@ begin
       FormMain.RESTRequest1.Execute;
       ConsoleMessage(FormMain.RESTResponse1.JSONText);
       if FormSettings.CheckBox_WinNotification.Checked then
-        RunNotification('ID: '+fixedID+' Enabled');
+        RunNotification(fixedName+' Enabled');
     end;
 
     if buttonSelected = mrNo    then  begin
@@ -123,8 +144,67 @@ begin
       FormMain.RESTRequest1.Execute;
       ConsoleMessage(FormMain.RESTResponse1.JSONText);
       if FormSettings.CheckBox_WinNotification.Checked then
-        RunNotification('ID: '+fixedID+' Disabled');
+        RunNotification(fixedName+' Disabled');
     end;
+end;
+
+procedure TFormMain.StringGrid1DblClick(Sender: TObject);
+begin
+  if StringGrid1.RowCount >= 3 then
+    DeleteCurrentRow(StringGrid1);
+end;
+
+
+procedure TFormMain.LineAdd(aStringGrid: TStringGrid; aPos: integer);
+var
+   sRowNext: Array of string;
+   sRowPrev: Array of string;
+   iIndex, iRow, iCol: Integer;
+   sTime:String;
+begin
+     iIndex := aStringGrid.Row;
+     aStringGrid.RowCount := aStringGrid.RowCount + 1;
+     SetLength(sRowNext, aStringGrid.ColCount);
+     SetLength(sRowPrev, aStringGrid.ColCount);
+
+     for iCol := 0 to aStringGrid.ColCount - 1 do
+         sRowNext[iCol] := ComboBox1.Text;
+     for iCol := 1 to aStringGrid.ColCount - 1 do begin
+        sTime := ComboBox2.Text+':'+ComboBox3.Text+':00';
+        if StringGrid1.Cells[iCol,aStringGrid.RowCount-3]=sTime then begin
+          //sRowNext[iCol] := ComboBox2.Text+':'+ComboBox3.Text+':'+ZeroFixTime(TrimLeadingZeros((((aStringGrid.RowCount-3).ToString+'0').ToInteger div 2).ToString));
+          sRowNext[iCol] := ComboBox2.Text+':'+ComboBox3.Text+':'+ZeroFixTime(TrimLeadingZeros(((aStringGrid.RowCount-3).ToString+'0')));  // add 10 sec delay
+        end else begin
+          sRowNext[iCol] := sTime;
+        end;
+     end;
+     for iCol := 2 to aStringGrid.ColCount - 1 do
+         sRowNext[iCol] := ComboBox4.Text;
+
+     for iRow := iIndex to aStringGrid.RowCount-1 do
+         for iCol := 0 to aStringGrid.ColCount-1 do
+         begin
+              sRowPrev[iCol] := aStringGrid.Cells[iCol, iRow];
+              aStringGrid.Cells[iCol, iRow] := sRowNext[iCol];
+              sRowNext[iCol] := sRowPrev[iCol];
+              //AutoSizeCol(aStringGrid,iCol);
+         end;
+     sRowNext := nil;
+     sRowPrev := nil;
+
+end;
+
+
+
+procedure TFormMain.Button1Click(Sender: TObject);
+begin
+  if ComboBox1.Text='' then
+    Panel2.Caption := 'Load devices first!'
+  else  begin
+    if StrToInt(ComboBox3.Text) <= 9 then
+      ComboBox3.Text := ZeroFixTime(TrimLeadingZeros(ComboBox3.Text));
+    LineAdd(StringGrid1,1);
+  end;
 end;
 
 procedure TFormMain.Button2Click(Sender: TObject);
@@ -133,7 +213,7 @@ begin
     ListBox2.Items.SaveToFile(LocalAppDataConfigPath+DEVICES_LIST_FILE);
     Item := TMenuItem.Create(PopupMenu1);
     Item.Caption := listbox1.items[listbox1.itemindex];
-    Item.OnClick := SendAPICommand;
+    Item.OnClick := PopupClickAPICommand;
     PopupMenu1.Items.Add(Item);
     ConsoleMessage('Added '+Item.Caption);
 end;
@@ -152,15 +232,60 @@ begin
       for x := 0 to listbox2.items.Count -1 do begin
         Item := TMenuItem.Create(PopupMenu1);
         Item.Caption := listbox2.items[x];
-        Item.OnClick := SendAPICommand;
+        Item.OnClick := PopupClickAPICommand;
         PopupMenu1.Items.Add(Item);
       end;
     end;
 end;
 
+procedure TFormMain.CheckBox1Click(Sender: TObject);
+begin
+  ConsoleMessage('asd');
+end;
+
+procedure TFormMain.AutoSizeCol(Grid: TStringGrid; Column: integer);
+var
+  i, W, WMax: integer;
+begin
+  WMax := 0;
+  for i := 0 to (Grid.RowCount - 1) do begin
+    W := Grid.Canvas.TextWidth(Grid.Cells[Column, i]);
+    if W > WMax then
+      WMax := W;
+  end;
+  Grid.ColWidths[Column] := WMax + 5;
+end;
+
 procedure TFormMain.FormActivate(Sender: TObject);
+var I:Integer;
 begin
   ListBox2.Items.SaveToFile(LocalAppDataConfigPath+DEVICES_LIST_FILE);
+  with stringgrid1 do  begin
+  cells[0,0]:='Device';
+  cells[1,0]:='Time';
+  cells[2,0]:='Action';
+
+  //cells[0,1]:='';
+  //cells[1,1]:=ListBox2.Items[0];
+  //cells[2,1]:=TimeToStr(Now);
+  //cells[3,1] := '';
+
+  end;
+  //for I := 0 to ListBox2.Items.Count -1 do
+    //ComboBox1.Items.Add(ListBox2.Items[I]);
+
+  for I := 0 to 23 do
+    ComboBox2.Items.Add(ZeroFixTime(I.ToString));
+
+  for I := 0 to 60 do
+    ComboBox3.Items.Add(ZeroFixTime(I.ToString));
+
+  //ComboBox1.Text := ListBox2.Items[0];
+  ComboBox2.Text := '12';
+  ComboBox3.Text := '00';
+  ComboBox4.Text := ComboBox4.Items[0];
+  PageControl1.ActivePageIndex :=0;
+  PageControl2.ActivePageIndex :=1;
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
@@ -177,7 +302,7 @@ begin
     for x := 0 to listbox2.items.Count -1 do begin
       Item := TMenuItem.Create(PopupMenu1);
       Item.Caption := listbox2.items[x];
-      Item.OnClick := SendAPICommand;
+      Item.OnClick := PopupClickAPICommand;
       PopupMenu1.Items.Add(Item);
       ConsoleMessage('Added: '+Item.Caption);
     end;
@@ -190,13 +315,16 @@ begin
   RESTRequest1.Destroy;
   RESTResponse1.Destroy;
   OAuth1Authenticator1.Destroy;
+  PopupMenu1.Destroy;
+  TrayIcon1.Destroy;
+  NotificationCenter1.Destroy;
   ListBox2.Items.SaveToFile(LocalAppDataConfigPath+DEVICES_LIST_FILE);
 end;
 
 procedure TFormMain.FormResize(Sender: TObject);
 begin
-  if FormMain.Width < 480 then
-    FormMain.Width := 480;
+  if FormMain.Width < 570 then
+    FormMain.Width := 570;
 
   if FormMain.Height < 310 then
     FormMain.Height := 310;
@@ -221,15 +349,15 @@ end;
 
 procedure TFormMain.ImageDisableClick(Sender: TObject);
 begin
-    fixedCaption := SelectedTabbItem;
-    fixedID := StringReplace(fixedCaption,' ','',[rfReplaceAll, rfIgnoreCase]);
+    fixedID := StringReplace(SelectedTabbItemID,' ','',[rfReplaceAll, rfIgnoreCase]);
+    fixedName := StringReplace(SelectedTabbItemName,' ','',[rfReplaceAll, rfIgnoreCase]);
     RESTRequest1.Params.AddItem('id',fixedID);
     RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
     RESTRequest1.Execute;
     ConsoleNewMessage('ID: '+fixedID+' Disabled');
     ConsoleMessage(RESTResponse1.JSONText);
     if FormSettings.CheckBox_WinNotification.Checked then
-      RunNotification('ID: '+fixedID+' Disabled');
+      RunNotification(fixedName+' Disabled');
 end;
 
 procedure TFormMain.ImageDisableMouseDown(Sender: TObject; Button: TMouseButton;
@@ -246,15 +374,15 @@ end;
 
 procedure TFormMain.ImageEnableClick(Sender: TObject);
 begin
-    fixedCaption := SelectedTabbItem;
-    fixedID := StringReplace(fixedCaption,' ','',[rfReplaceAll, rfIgnoreCase]);
+    fixedID := StringReplace(SelectedTabbItemID,' ','',[rfReplaceAll, rfIgnoreCase]);
+    fixedName := StringReplace(SelectedTabbItemName,' ','',[rfReplaceAll, rfIgnoreCase]);
     RESTRequest1.Params.AddItem('id',fixedID);
     RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
     RESTRequest1.Execute;
     ConsoleNewMessage('ID: '+fixedID+' Enabled');
     ConsoleMessage(RESTResponse1.JSONText);
     if FormSettings.CheckBox_WinNotification.Checked then
-      RunNotification('ID: '+fixedID+' Enabled');
+      RunNotification(fixedName+' Enabled');
 end;
 
 procedure TFormMain.ImageEnableMouseDown(Sender: TObject; Button: TMouseButton;
@@ -321,9 +449,9 @@ end;
 
 procedure TFormMain.ListBox1DblClick(Sender: TObject);
 begin
-    fixedCaption := copy(listbox1.items[listbox1.itemindex],4,9);
-    fixedID := StringReplace(fixedCaption,' ','',[rfReplaceAll, rfIgnoreCase]);
-    buttonSelected := MessageDlg('Chose what to do with '+fixedCaption,mtCustom,
+    fixedID := StringReplace(SelectedTabbItemID,' ','',[rfReplaceAll, rfIgnoreCase]);
+    fixedName := StringReplace(SelectedTabbItemName,' ','',[rfReplaceAll, rfIgnoreCase]);
+    buttonSelected := MessageDlg('Chose what to do with '+fixedID,mtCustom,
                               [mbYes,mbNo], 0);
     if buttonSelected = mrYes    then begin
       ConsoleNewMessage('ID: '+fixedID+' Enabled');
@@ -332,7 +460,7 @@ begin
       RESTRequest1.Execute;
       ConsoleMessage(RESTResponse1.JSONText);
       if FormSettings.CheckBox_WinNotification.Checked then
-        RunNotification('ID: '+fixedID+' Enabled');
+        RunNotification(fixedName+' Enabled');
     end;
 
     if buttonSelected = mrNo    then  begin
@@ -342,7 +470,7 @@ begin
       RESTRequest1.Execute;
       ConsoleMessage(RESTResponse1.JSONText);
       if FormSettings.CheckBox_WinNotification.Checked then
-        RunNotification('ID: '+fixedID+' Disabled');
+        RunNotification(fixedName+' Disabled');
     end;
     //ConsoleMessage('ID: '+fixedID);
 end;
@@ -356,28 +484,28 @@ end;
 
 procedure TFormMain.ListBox2DblClick(Sender: TObject);
 begin
-    fixedCaption := SelectedTabbItem;
-    fixedID := StringReplace(fixedCaption,' ','',[rfReplaceAll, rfIgnoreCase]);
-    buttonSelected := MessageDlg('Chose what to do with '+fixedCaption,mtCustom,
+    fixedID := StringReplace(SelectedTabbItemID,' ','',[rfReplaceAll, rfIgnoreCase]);
+    fixedName := StringReplace(SelectedTabbItemName,' ','',[rfReplaceAll, rfIgnoreCase]);
+    buttonSelected := MessageDlg('Chose what to do with '+fixedID,mtCustom,
                               [mbYes,mbNo], 0);
     if buttonSelected = mrYes    then begin
-      ConsoleNewMessage('ID: '+fixedID+' Enabled');
+      ConsoleNewMessage(fixedID+' Enabled');
       RESTRequest1.Params.AddItem('id',fixedID);
       RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
       RESTRequest1.Execute;
       ConsoleMessage(RESTResponse1.JSONText);
       if FormSettings.CheckBox_WinNotification.Checked then
-        RunNotification('ID: '+fixedID+' Enabled');
+        RunNotification(fixedName+' Enabled');
     end;
 
     if buttonSelected = mrNo    then  begin
-      ConsoleNewMessage('ID: '+fixedID+' Disabled');
+      ConsoleNewMessage(fixedID+' Disabled');
       RESTRequest1.Params.AddItem('id',fixedID);
       RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
       RESTRequest1.Execute;
       ConsoleMessage(RESTResponse1.JSONText);
       if FormSettings.CheckBox_WinNotification.Checked then
-        RunNotification('ID: '+fixedID+' Disabled');
+        RunNotification(fixedName+' Disabled');
     end;
     //ConsoleMessage('ID: '+fixedID);
 end;
@@ -413,6 +541,34 @@ procedure TFormMain.TabSheet2Show(Sender: TObject);
 begin
   Button2.Enabled := False;
   Button3.Enabled := False;
+end;
+
+procedure TFormMain.Timer1Timer(Sender: TObject);
+var iRow:Integer;
+begin
+  for iRow := 0 to stringgrid1.RowCount -1 do  begin
+      if StringGrid1.Cells[1,iRow]=TimeToStr(Now) then  begin
+        fixedID := StringReplace(ExtractText(StringGrid1.Cells[0,iRow],':','/'),' ','',[rfReplaceAll, rfIgnoreCase]);
+        fixedName := StringReplace(ExtractText(StringGrid1.Cells[0,iRow],'/','.'),' ','',[rfReplaceAll, rfIgnoreCase]);
+        if StringGrid1.Cells[2,iRow]='ON' then  begin
+          RESTRequest1.Params.AddItem('id',fixedID);
+          RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
+          RESTRequest1.Execute;
+          ConsoleNewMessage(fixedName+' Enabled');
+          ConsoleMessage(RESTResponse1.JSONText);
+          //if FormSettings.CheckBox_WinNotification.Checked then
+          RunNotification(fixedName+' Enabled');
+        end else if StringGrid1.Cells[2,iRow]='OFF' then begin
+          RESTRequest1.Params.AddItem('id',fixedID);
+          RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
+          RESTRequest1.Execute;
+          ConsoleNewMessage(fixedName+' Disabled');
+          ConsoleMessage(RESTResponse1.JSONText);
+          //if FormSettings.CheckBox_WinNotification.Checked then
+          RunNotification(fixedName+' Disabled');
+        end;
+      end;
+  end;
 end;
 
 procedure TFormMain.TrayIcon1DblClick(Sender: TObject);
