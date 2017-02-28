@@ -14,5 +14,5 @@ Need following Private Key, Public Key, Token and Token Secret to work!
 
 ---
 ![alt text](https://github.com/Limmek/WRTL/blob/master/images/wrtl.gif "WinRemoteTelldusLive")
-![alt text](https://github.com/Limmek/WRTL/blob/master/images/2.JPG "WinRemoteTelldusLive")
-![alt text](https://github.com/Limmek/WRTL/blob/master/images/3.JPG "WinRemoteTelldusLive")
+![alt text](https://github.com/Limmek/WRTL/blob/master/images/settings.jpg "WinRemoteTelldusLive")
+![alt text](https://github.com/Limmek/WRTL/blob/master/images/systray.jpg "WinRemoteTelldusLive")
