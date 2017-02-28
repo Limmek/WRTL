@@ -22,6 +22,7 @@ Get it from [api.telldus.com](https://api.telldus.com)
 If you having any issues run the app as admin (Right click->WinRemoteTellduslive.exe->Run as admin).
 
 ------
+![alt text](https://github.com/Limmek/WRTL/blob/master/images/systray.jpg "WinRemoteTelldusLive")
 ![alt text](https://github.com/Limmek/WRTL/blob/master/images/wrtl.gif "WinRemoteTelldusLive")
 ![alt text](https://github.com/Limmek/WRTL/blob/master/images/settings.jpg "WinRemoteTelldusLive")
-![alt text](https://github.com/Limmek/WRTL/blob/master/images/systray.jpg "WinRemoteTelldusLive")
+
