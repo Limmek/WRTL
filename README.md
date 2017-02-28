@@ -11,7 +11,8 @@ Need following Private Key, Public Key, Token and Token Secret to work.
 Get it from [api.telldus.com](https://api.telldus.com)
 ------
 
-### Features 
+### Features
+* Get devices and sensor list.
 * Add devices to system tray icon.
 * Schedule multiple devices at daily time. 
 * Windows notifications.
@@ -25,3 +26,8 @@ If you having any issues run the app as admin (Right click->WinRemoteTellduslive
 ![alt text](https://github.com/Limmek/WRTL/blob/master/images/wrtl.gif "WinRemoteTelldusLive")
 ![alt text](https://github.com/Limmek/WRTL/blob/master/images/settings.jpg "WinRemoteTelldusLive")
 ![alt text](https://github.com/Limmek/WRTL/blob/master/images/systray.jpg "WinRemoteTelldusLive")
+------
+
+Tested on **Windows 10** and **Windows Server 2012R2**.
+
+It should work on windows 7 and lower with **notifications Disabled** this is however not tested!
