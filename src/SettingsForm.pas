@@ -29,14 +29,15 @@ type
     Edit_PRIVATE_KEY: TEdit;
     Edit_TOKEN_SECRET: TEdit;
     Edit_TOKEN: TEdit;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
     CheckBox_WinNotification: TCheckBox;
     ImageLogFile: TImage;
     CheckBox_LogToFile: TCheckBox;
     Label5: TLabel;
+    CheckBoxEnableHotkeys: TCheckBox;
+    GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
+    GroupBox3: TGroupBox;
+    GroupBox4: TGroupBox;
     procedure ImageLocalFolderClick(Sender: TObject);
     procedure ImageSaveClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -91,6 +92,7 @@ begin
   end
   else  begin
     ConsoleMessage('Loading settings');
+    ConsoleMessage(LocalAppDataConfigPath+Application.Title+CONFIG_EXT);
     ReadConfig;
   end;
   Label5.Caption:=API_URL;

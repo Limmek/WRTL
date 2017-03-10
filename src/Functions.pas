@@ -3,7 +3,9 @@ unit Functions;
 interface
 
 uses SettingsTelldusLive,
-Winapi.Windows, SysUtils, Classes, shlobj, MainForm, SettingsForm, Registry, Inifiles;
+Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.UITypes,
+Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Menus,
+shlobj, MainForm, SettingsForm, Registry, Inifiles;
 
 function GetAppVersionStr: string;
 
@@ -16,8 +18,21 @@ function SelectedTabbItemID: string;
 function SelectedTabbItemName: string;
 function ExtractText(const Str: string; const Delim1, Delim2: char): string;
 function ZeroFixTime(const Str:String):String;
+function ZeroReturnOne(const I:Integer):Integer;
 function TrimLeadingZeros(const S: string): string;
+
+function MyMessageDlg(CONST Msg: string; DlgTypt: TmsgDlgType; button: TMsgDlgButtons;
+  Caption: ARRAY OF string; dlgcaption: string): Integer;
+
 implementation
+
+function ZeroReturnOne(const I:Integer):Integer;
+begin
+  if I = 0 then
+    Result:= 1
+  else
+    Result := I
+end;
 
 function ZeroFixTime(const Str:String):String;
 begin
@@ -138,6 +153,32 @@ begin
      LongRec(FixedPtr.dwFileVersionMS).Lo,  //minor
      LongRec(FixedPtr.dwFileVersionLS).Hi,  //release
      LongRec(FixedPtr.dwFileVersionLS).Lo]) //build
+end;
+
+function MyMessageDlg(CONST Msg: string; DlgTypt: TmsgDlgType; button: TMsgDlgButtons;
+  Caption: ARRAY OF string; dlgcaption: string): Integer;
+var
+  aMsgdlg: TForm;
+  i: Integer;
+  Dlgbutton: Tbutton;
+  Captionindex: Integer;
+begin
+  aMsgdlg := createMessageDialog(Msg, DlgTypt, button);
+  aMsgdlg.Caption := dlgcaption;
+  aMsgdlg.BiDiMode := bdRightToLeft;
+  aMsgdlg.Color := clWhite;
+  Captionindex := 0;
+  for i := 0 to aMsgdlg.componentcount - 1 Do
+  begin
+    if (aMsgdlg.components[i] is Tbutton) then
+    Begin
+      Dlgbutton := Tbutton(aMsgdlg.components[i]);
+      if Captionindex <= High(Caption) then
+        Dlgbutton.Caption := Caption[Captionindex];
+      inc(Captionindex);
+    end;
+  end;
+  Result := aMsgdlg.Showmodal;
 end;
 
 end.

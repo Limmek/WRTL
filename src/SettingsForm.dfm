@@ -4,8 +4,8 @@ object FormSettings: TFormSettings
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Settings'
-  ClientHeight = 371
-  ClientWidth = 314
+  ClientHeight = 386
+  ClientWidth = 304
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,7 +19,7 @@ object FormSettings: TFormSettings
   TextHeight = 13
   object Label5: TLabel
     Left = 160
-    Top = 180
+    Top = 195
     Width = 124
     Height = 14
     Hint = 'Klick to open'
@@ -37,138 +37,129 @@ object FormSettings: TFormSettings
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 314
-    Height = 176
+    Width = 304
+    Height = 191
     Align = alClient
     BevelOuter = bvNone
     ParentBackground = False
     TabOrder = 0
-    object Label1: TLabel
+    object GroupBox1: TGroupBox
       AlignWithMargins = True
-      Left = 3
-      Top = 5
-      Width = 308
-      Height = 13
-      Margins.Top = 5
+      Left = 10
+      Top = 2
+      Width = 284
+      Height = 45
+      Margins.Left = 10
+      Margins.Top = 2
+      Margins.Right = 10
+      Margins.Bottom = 0
       Align = alTop
-      Alignment = taCenter
       Caption = 'Public key'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      ExplicitWidth = 57
-    end
-    object Label2: TLabel
-      AlignWithMargins = True
-      Left = 3
-      Top = 48
-      Width = 308
-      Height = 13
-      Align = alTop
-      Alignment = taCenter
-      Caption = 'Private key'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      ExplicitWidth = 65
-    end
-    object Label3: TLabel
-      AlignWithMargins = True
-      Left = 3
-      Top = 91
-      Width = 308
-      Height = 13
-      Align = alTop
-      Alignment = taCenter
-      Caption = 'Token'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      ExplicitWidth = 35
-    end
-    object Label4: TLabel
-      AlignWithMargins = True
-      Left = 3
-      Top = 134
-      Width = 308
-      Height = 13
-      Align = alTop
-      Alignment = taCenter
-      Caption = 'Token secret'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      ExplicitWidth = 74
-    end
-    object Edit_PUBLIC_KEY: TEdit
-      AlignWithMargins = True
-      Left = 20
-      Top = 21
-      Width = 274
-      Height = 21
-      Margins.Left = 20
-      Margins.Top = 0
-      Margins.Right = 20
-      Align = alTop
-      Alignment = taCenter
       TabOrder = 0
+      object Edit_PUBLIC_KEY: TEdit
+        AlignWithMargins = True
+        Left = 7
+        Top = 15
+        Width = 270
+        Height = 21
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Align = alTop
+        Alignment = taCenter
+        TabOrder = 0
+      end
     end
-    object Edit_PRIVATE_KEY: TEdit
+    object GroupBox2: TGroupBox
       AlignWithMargins = True
-      Left = 20
-      Top = 64
-      Width = 274
-      Height = 21
-      Margins.Left = 20
-      Margins.Top = 0
-      Margins.Right = 20
+      Left = 10
+      Top = 49
+      Width = 284
+      Height = 45
+      Margins.Left = 10
+      Margins.Top = 2
+      Margins.Right = 10
+      Margins.Bottom = 0
       Align = alTop
-      Alignment = taCenter
+      Caption = 'Private key'
       TabOrder = 1
+      object Edit_PRIVATE_KEY: TEdit
+        AlignWithMargins = True
+        Left = 7
+        Top = 15
+        Width = 270
+        Height = 21
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Align = alTop
+        Alignment = taCenter
+        TabOrder = 0
+      end
     end
-    object Edit_TOKEN_SECRET: TEdit
+    object GroupBox3: TGroupBox
       AlignWithMargins = True
-      Left = 20
-      Top = 150
-      Width = 274
-      Height = 21
-      Margins.Left = 20
-      Margins.Top = 0
-      Margins.Right = 20
+      Left = 10
+      Top = 96
+      Width = 284
+      Height = 45
+      Margins.Left = 10
+      Margins.Top = 2
+      Margins.Right = 10
+      Margins.Bottom = 0
       Align = alTop
-      Alignment = taCenter
+      Caption = 'Token'
       TabOrder = 2
+      object Edit_TOKEN: TEdit
+        AlignWithMargins = True
+        Left = 7
+        Top = 15
+        Width = 270
+        Height = 21
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Align = alTop
+        Alignment = taCenter
+        TabOrder = 0
+      end
     end
-    object Edit_TOKEN: TEdit
+    object GroupBox4: TGroupBox
       AlignWithMargins = True
-      Left = 20
-      Top = 107
-      Width = 274
-      Height = 21
-      Margins.Left = 20
-      Margins.Top = 0
-      Margins.Right = 20
+      Left = 10
+      Top = 143
+      Width = 284
+      Height = 45
+      Margins.Left = 10
+      Margins.Top = 2
+      Margins.Right = 10
+      Margins.Bottom = 0
       Align = alTop
-      Alignment = taCenter
+      Caption = 'Token secret'
       TabOrder = 3
+      object Edit_TOKEN_SECRET: TEdit
+        AlignWithMargins = True
+        Left = 7
+        Top = 15
+        Width = 270
+        Height = 21
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Align = alTop
+        Alignment = taCenter
+        TabOrder = 0
+      end
     end
   end
   object Panel2: TPanel
     Left = 0
-    Top = 331
-    Width = 314
+    Top = 346
+    Width = 304
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -176,7 +167,7 @@ object FormSettings: TFormSettings
     TabOrder = 1
     object ImageLocalFolder: TImage
       AlignWithMargins = True
-      Left = 264
+      Left = 254
       Top = 0
       Width = 40
       Height = 40
@@ -240,7 +231,7 @@ object FormSettings: TFormSettings
     end
     object ImageRegedit: TImage
       AlignWithMargins = True
-      Left = 218
+      Left = 208
       Top = 0
       Width = 40
       Height = 40
@@ -274,7 +265,7 @@ object FormSettings: TFormSettings
     end
     object ImageLogFile: TImage
       AlignWithMargins = True
-      Left = 172
+      Left = 162
       Top = 0
       Width = 40
       Height = 40
@@ -304,8 +295,8 @@ object FormSettings: TFormSettings
   object PageControl1: TPageControl
     AlignWithMargins = True
     Left = 0
-    Top = 176
-    Width = 314
+    Top = 191
+    Width = 304
     Height = 155
     Margins.Left = 0
     Margins.Top = 0
@@ -328,7 +319,7 @@ object FormSettings: TFormSettings
         AlignWithMargins = True
         Left = 15
         Top = 0
-        Width = 276
+        Width = 266
         Height = 20
         Margins.Left = 15
         Margins.Top = 0
@@ -342,7 +333,7 @@ object FormSettings: TFormSettings
         AlignWithMargins = True
         Left = 15
         Top = 26
-        Width = 276
+        Width = 266
         Height = 20
         Margins.Left = 15
         Margins.Top = 6
@@ -355,8 +346,8 @@ object FormSettings: TFormSettings
       object CheckBox_StartMinimized: TCheckBox
         AlignWithMargins = True
         Left = 15
-        Top = 52
-        Width = 276
+        Top = 78
+        Width = 266
         Height = 20
         Margins.Left = 15
         Margins.Top = 6
@@ -369,8 +360,8 @@ object FormSettings: TFormSettings
       object CheckBox_WinNotification: TCheckBox
         AlignWithMargins = True
         Left = 15
-        Top = 104
-        Width = 276
+        Top = 52
+        Width = 266
         Height = 20
         Margins.Left = 15
         Margins.Top = 6
@@ -383,16 +374,30 @@ object FormSettings: TFormSettings
       object CheckBox_LogToFile: TCheckBox
         AlignWithMargins = True
         Left = 15
-        Top = 78
-        Width = 276
-        Height = 20
+        Top = 104
+        Width = 98
+        Height = 22
         Margins.Left = 15
         Margins.Top = 6
         Margins.Right = 15
         Margins.Bottom = 0
-        Align = alTop
+        Align = alLeft
         Caption = 'Enable logging'
         TabOrder = 4
+      end
+      object CheckBoxEnableHotkeys: TCheckBox
+        AlignWithMargins = True
+        Left = 174
+        Top = 104
+        Width = 107
+        Height = 22
+        Margins.Left = 15
+        Margins.Top = 6
+        Margins.Right = 15
+        Margins.Bottom = 0
+        Align = alRight
+        Caption = 'Enable hotkeys'
+        TabOrder = 5
       end
     end
     object TabSheet2: TTabSheet
@@ -403,16 +408,12 @@ object FormSettings: TFormSettings
       Caption = 'About'
       ImageIndex = 2
       OnShow = TabSheet2Show
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ImageGit: TImage
         AlignWithMargins = True
-        Left = 201
+        Left = 191
         Top = 3
         Width = 100
-        Height = 100
+        Height = 104
         Margins.Right = 5
         Align = alRight
         AutoSize = True
@@ -486,9 +487,9 @@ object FormSettings: TFormSettings
       end
       object LabelGit: TLabel
         AlignWithMargins = True
-        Left = 196
+        Left = 5
         Top = 110
-        Width = 105
+        Width = 286
         Height = 14
         Margins.Left = 5
         Margins.Top = 0
@@ -504,6 +505,8 @@ object FormSettings: TFormSettings
         Font.Style = []
         ParentFont = False
         OnClick = LabelGitClick
+        ExplicitLeft = 186
+        ExplicitWidth = 105
       end
       object LabelAuthor: TLabel
         Left = 3
@@ -524,7 +527,7 @@ object FormSettings: TFormSettings
         Left = 5
         Top = 5
         Width = 198
-        Height = 52
+        Height = 100
         Margins.Left = 5
         Margins.Top = 5
         Margins.Right = 5
@@ -540,6 +543,7 @@ object FormSettings: TFormSettings
         Font.Style = []
         ParentFont = False
         WordWrap = True
+        ExplicitHeight = 52
       end
     end
   end

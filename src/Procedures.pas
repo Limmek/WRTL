@@ -10,6 +10,11 @@ uses
   IPPeerClient, REST.Client, REST.Authenticator.OAuth, Data.Bind.Components, Data.Bind.ObjectScope, JSON, DBXJSON,
   Vcl.Grids, Vcl.Menus, Math, Vcl.Buttons, Inifiles, Registry, shlobj, System.Notification;
 
+type
+  PopupClickAPICommand = class(TObject)
+  public
+    class procedure Send(Sender: TObject);
+  end;
 
 procedure WriteConfig;
 procedure ReadConfig;
@@ -26,6 +31,11 @@ procedure DeleteCurrentRow(Grid: TStringGrid);
 procedure StringGrid2File(StringGrid: TStringGrid; FileName: String);
 procedure File2StringGrid(StringGrid: TStringGrid; FileName: String);
 
+Procedure ShowChoiseMessage(fixedID,fixedName:String);
+
+procedure AddHotKeyEnable(Handle:HWND; HotKey:Integer);
+procedure AddHotKeyDisable(Handle:HWND; HotKey:Integer);
+
 implementation
 
 var
@@ -34,6 +44,84 @@ var
   JSONArray: TJSONArray;
   //JSONValue : TJSONValue;
   devices: TJSONObject;
+  fixedID,fixedName: String;
+
+class procedure PopupClickAPICommand.Send(Sender: TObject);
+begin
+    fixedID := ExtractText(FormMain.ListBox2.Items[TMenuItem(Sender).MenuIndex],':','/');
+    fixedName := ExtractText(FormMain.ListBox2.Items[TMenuItem(Sender).MenuIndex],'/','.');
+    ShowChoiseMessage(fixedID,fixedName);
+end;
+
+procedure AddHotKeyEnable(Handle:HWND; HotKey:Integer);
+var hkID:Integer;
+begin
+  hkID := HotKey;
+  if HotKey = 0 then begin
+    RegisterHotKey(Handle, hkID, MOD_CONTROL or MOD_ALT, VK_F1 );
+  end;
+  if HotKey = 1 then begin
+    RegisterHotKey(Handle, hkID, MOD_CONTROL or MOD_ALT, VK_F2 );
+  end;
+  if HotKey = 2 then begin
+    RegisterHotKey(Handle, hkID, MOD_CONTROL or MOD_ALT, VK_F3 );
+  end;
+  if HotKey = 3 then begin
+    RegisterHotKey(Handle, hkID, MOD_CONTROL or MOD_ALT, VK_F4 );
+  end;
+end;
+
+procedure AddHotKeyDisable(Handle:HWND; HotKey:Integer);
+var hkID:Integer;
+begin
+  hkID := (100+HotKey);
+  if HotKey = 0 then begin
+    RegisterHotKey(Handle, hkID, MOD_SHIFT or MOD_ALT, VK_F1 );
+  end;
+  if HotKey = 1 then begin
+    RegisterHotKey(Handle, hkID, MOD_SHIFT or MOD_ALT, VK_F2 );
+  end;
+  if HotKey = 2 then begin
+    RegisterHotKey(Handle, hkID, MOD_SHIFT or MOD_ALT, VK_F3 );
+  end;
+  if HotKey = 3 then begin
+    RegisterHotKey(Handle, hkID, MOD_SHIFT or MOD_ALT, VK_F4 );
+  end;
+end;
+
+Procedure ShowChoiseMessage(fixedID,fixedName:String);
+var
+buttonSelected : Integer;
+begin
+    //buttonSelected := MessageDlg('Enable or Disable '+fixedName,mtCustom, [mbYes,mbNo],['Enable','Disable'], 0);
+    buttonSelected := MyMessageDlg('What to do with '+fixedName, mtCustom, [mbYes, mbNo], ['Enable','Disable'], Application.Title);
+    if buttonSelected = mrYes    then begin
+      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
+      FormMain.RESTRequest1.Params.AddItem('id',fixedID);
+      FormMain.RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
+      try
+        FormMain.RESTRequest1.Execute;
+      finally
+        ConsoleMessage(FormMain.RESTResponse1.JSONText);
+        if FormSettings.CheckBox_WinNotification.Checked then
+          RunNotification(fixedName+' Enabled');
+      end;
+    end;
+
+    if buttonSelected = mrNo    then  begin
+      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
+      FormMain.RESTRequest1.Params.AddItem('id',fixedID);
+      FormMain.RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
+      try
+        FormMain.RESTRequest1.Execute;
+      finally
+        ConsoleMessage(FormMain.RESTResponse1.JSONText);
+        if FormSettings.CheckBox_WinNotification.Checked then
+          RunNotification(fixedName+' Disabled');
+      end;
+    end;
+end;
+
 
 procedure StringGrid2File(StringGrid: TStringGrid; FileName: String);
 var
@@ -88,6 +176,7 @@ begin
   Notification := FormMain.NotificationCenter1.CreateNotification;
   try
     Notification.Name := Application.Title;
+    Notification.Title := Application.Title;
     Notification.AlertBody := AlertMsg;
     Notification.FireDate := Now;
 
@@ -120,17 +209,18 @@ begin
     CloseFile(F);
 end;
 
-procedure ConsoleMessage(msg:String);
+procedure ConsoleMessage(Msg:String);
 begin
-  FormMain.Memo1.Lines.Add(msg);
-  msg:=DateTimeToStr(Now)+': '+msg;
-  if LOGGING then Log(msg);
+  Msg:=FormatDateTime('tt',Now())+': '+Msg;
+  FormMain.Memo1.Lines.Add(Msg);
+  if LOGGING then Log(Msg);
 end;
 
-procedure ConsoleNewMessage(msg:String);
+procedure ConsoleNewMessage(Msg:String);
 begin
-  FormMain.Memo1.Text := msg;
-  if LOGGING then Log(msg);
+  Msg:=DateTimeToStr(Now)+': '+Msg;
+  FormMain.Memo1.Text := Msg;
+  if LOGGING then Log(Msg);
 end;
 
 procedure WriteConfig;
@@ -146,12 +236,14 @@ begin
     Ini.WriteBool( 'Settings', 'RunWithWindows', FormSettings.CheckBox_SartWithWindows.Checked );
     Ini.WriteBool( 'Settings', 'EnableLogging', FormSettings.CheckBox_LogToFile.Checked );
     Ini.WriteBool( 'Settings', 'EnableNotifications', FormSettings.CheckBox_WinNotification.Checked );
+    Ini.WriteBool( 'Settings', 'EnableHotkeys', FormSettings.CheckBoxEnableHotkeys.Checked );
   finally
     Ini.Free;
   end;
 end;
 
 procedure ReadConfig;
+var I,X:Integer;
 begin
   Ini := TIniFile.Create( LocalAppDataConfigFile );
   try
@@ -188,19 +280,31 @@ begin
     end;
 
     if (Ini.ReadBool( 'Settings', 'EnableLogging', false )) then begin
-       FormSettings.CheckBox_LogToFile.Checked := True;
-       LOGGING := True;
+      FormSettings.CheckBox_LogToFile.Checked := True;
+      LOGGING := True;
     end
     else begin
       FormSettings.CheckBox_LogToFile.Checked := False;
-       LOGGING := False;
+      LOGGING := False;
     end;
 
     if (Ini.ReadBool( 'Settings', 'EnableNotifications', false )) then begin
-       FormSettings.CheckBox_WinNotification.Checked := True;
+      FormSettings.CheckBox_WinNotification.Checked := True;
     end
     else begin
-       FormSettings.CheckBox_WinNotification.Checked := False;
+      FormSettings.CheckBox_WinNotification.Checked := False;
+    end;
+
+    if (Ini.ReadBool( 'Settings', 'EnableHotkeys', false )) then begin
+      FormSettings.CheckBoxEnableHotkeys.Checked := True;
+      FormMain.TabSheetHotKey.Enabled := True;
+      for I := 0 to FormMain.ListBox3.Count do
+        AddHotKeyEnable(FormMain.Handle, I);
+      for I := 0 to FormMain.ListBox4.Count do
+        AddHotKeyDisable(FormMain.Handle, I);
+    end  else  begin
+      FormSettings.CheckBoxEnableHotkeys.Checked := False;
+      FormMain.TabSheetHotKey.Enabled := False;
     end;
 
   finally
@@ -211,9 +315,11 @@ end;
 procedure LoadSensorer;
 begin
   FormMain.RESTClient1.BaseURL := API_URL + REQUEST_JSON + SENSOR_LIST;
-  FormMain.RESTRequest1.Execute;
-  ConsoleNewMessage(FormMain.RESTResponse1.JSONText);
-  FormMain.Memo1.ScrollBars := ssVertical;
+  try
+    FormMain.RESTRequest1.Execute;
+  finally
+    ConsoleMessage(FormMain.RESTResponse1.JSONText);
+  end;
 end;
 
 procedure LoadDevices;
@@ -222,32 +328,33 @@ var
   //idy: integer;
 begin
   FormMain.RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICES_LIST;
-  FormMain.RESTRequest1.Execute;
-  ConsoleNewMessage(FormMain.RESTResponse1.JSONText);
-  FormMain.Memo1.ScrollBars := ssVertical;
-  FormMain.ListBox1.Clear;
-  FormMain.Panel2.Caption :='';
-  JSONObject := nil;
-
-  { convert String to JSON }
-  JSONObject := TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(FormMain.RESTResponse1.JSONText), 0) as TJSONObject;
   try
-    { output the JSON to console as String }
-      //ConsoleNewMessage(JSONObject.ToString);
-      JSONArray := TJSONArray(JSONObject.Get('device').JsonValue);
-      for idx := 0 to pred(JSONArray.Count) do begin
-        //devices := TJSONObject(JSONArray.Get(idx));
-        devices := TJSONObject(JSONArray.Items[idx]);
-        FormMain.ListBox1.Items.Add('id:' + devices.GetValue<string>('id') + '/ '+ devices.GetValue<string>('name')+'.');
-        FormMain.ComboBox1.Items.Add('id:' + devices.GetValue<string>('id') + '/ '+ devices.GetValue<string>('name')+'.');
-        //FormMain.ListBox1.Items.Add(devices.GetValue<string>('id'));
-        //for idy := 0 to pred(devices.Count) do begin
-          //ConsoleMessage( devices.Pairs[idy].JsonString.ToString + ':' + devices.Pairs[idy].JsonValue.ToString );
-        //end;
-      end;
-      FormMain.ComboBox1.Text:=(FormMain.ListBox1.Items[0]);
+    FormMain.RESTRequest1.Execute;
   finally
-    JSONObject.Free;
+    ConsoleMessage(FormMain.RESTResponse1.JSONText);
+    FormMain.ListBox1.Clear;
+    FormMain.Panel2.Caption :='';
+    JSONObject := nil;
+    { convert String to JSON }
+    JSONObject := TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(FormMain.RESTResponse1.JSONText), 0) as TJSONObject;
+    try
+      { output the JSON to console as String }
+        //ConsoleNewMessage(JSONObject.ToString);
+        JSONArray := TJSONArray(JSONObject.Get('device').JsonValue);
+        for idx := 0 to pred(JSONArray.Count) do begin
+          //devices := TJSONObject(JSONArray.Get(idx));
+          devices := TJSONObject(JSONArray.Items[idx]);
+          FormMain.ListBox1.Items.Add('id:' + devices.GetValue<string>('id') + '/ '+ devices.GetValue<string>('name')+'.');
+          FormMain.ComboBox1.Items.Add('id:' + devices.GetValue<string>('id') + '/ '+ devices.GetValue<string>('name')+'.');
+          //FormMain.ListBox1.Items.Add(devices.GetValue<string>('id'));
+          //for idy := 0 to pred(devices.Count) do begin
+            //ConsoleMessage( devices.Pairs[idy].JsonString.ToString + ':' + devices.Pairs[idy].JsonValue.ToString );
+          //end;
+        end;
+        FormMain.ComboBox1.Text:=(FormMain.ListBox1.Items[0]);
+    finally
+      JSONObject.Free;
+    end;
   end;
 
 end;

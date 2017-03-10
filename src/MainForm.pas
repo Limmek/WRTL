@@ -32,13 +32,13 @@ type
     Button2: TButton;
     Button3: TButton;
     PageControl1: TPageControl;
-    TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
+    TabSheetDeviceList: TTabSheet;
+    TabSheetTaskbarList: TTabSheet;
     ListBox2: TListBox;
     NotificationCenter1: TNotificationCenter;
     PageControl2: TPageControl;
-    TabSheet3: TTabSheet;
-    TabSheet4: TTabSheet;
+    TabSheetConsole: TTabSheet;
+    TabSheetSchedule: TTabSheet;
     ComboBox1: TComboBox;
     Timer1: TTimer;
     StringGrid1: TStringGrid;
@@ -50,6 +50,15 @@ type
     UpDown2: TUpDown;
     ComboBox3: TComboBox;
     Label1: TLabel;
+    TabSheetHotKey: TTabSheet;
+    ListBox3: TListBox;
+    Panel6: TPanel;
+    ButtonAddHotkey: TButton;
+    ListBox4: TListBox;
+    ComboBox7: TComboBox;
+    ComboBox8: TComboBox;
+    GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
     procedure FormCreate(Sender: TObject);
     procedure OnMinimize(Sender:TObject);
     procedure TrayIcon1DblClick(Sender: TObject);
@@ -61,8 +70,8 @@ type
     procedure ImageEnableClick(Sender: TObject);
     procedure ImageDisableClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure TabSheet2Show(Sender: TObject);
-    procedure TabSheet1Show(Sender: TObject);
+    procedure TabSheetTaskbarListShow(Sender: TObject);
+    procedure TabSheetDeviceListShow(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure ListBox1DblClick(Sender: TObject);
     procedure ListBox2Click(Sender: TObject);
@@ -93,17 +102,24 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure FormResize(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
-    procedure CheckBox1Click(Sender: TObject);
     procedure LineAdd(aStringGrid: TStringGrid; aPos: integer);
     procedure Button1Click(Sender: TObject);
     procedure AutoSizeCol(Grid: TStringGrid; Column: integer);
     procedure StringGrid1DblClick(Sender: TObject);
+    procedure ButtonAddHotkeyClick(Sender: TObject);
+    procedure ListBox3DblClick(Sender: TObject);
+    procedure ListBox4DblClick(Sender: TObject);
   private
     { Private declarations }
+    procedure WMHotKey(var Msg: TWMHotKey); message WM_HOTKEY;
   public
     { Public declarations }
-    procedure PopupClickAPICommand(Sender: TObject);
   end;
+
+  TMyThread = class(TThread)
+  public
+    procedure Execute; override;
+end;
 
 var
   FormMain: TFormMain;
@@ -115,40 +131,15 @@ implementation
 uses SettingsForm, SettingsTelldusLive, Functions, Procedures;
 
 var
-  ConsumerKey, ConsumerSecret, AuthToken, AuthSecret, FilePath: String;
+  ConsumerKey, ConsumerSecret, AuthToken, AuthSecret, fixedCaption, fixedID, fixedName: String;
+  fixedHotKey: Integer;
   Item: TMenuItem;
-  buttonSelected : Integer;
-  fixedCaption, fixedID, fixedName: String;
 
-
-
-procedure TFormMain.PopupClickAPICommand(Sender: TObject);
+procedure TMyThread.Execute;
 begin
-    fixedCaption := ExtractText(FormMain.ListBox2.Items[TMenuItem(Sender).MenuIndex],':','/');
-    fixedID := StringReplace(fixedCaption,' ','',[rfReplaceAll, rfIgnoreCase]);
-    fixedName := ExtractText(FormMain.ListBox2.Items[TMenuItem(Sender).MenuIndex],'/','.');
-    buttonSelected := MessageDlg('Enable or Disable '+fixedName,mtCustom,
-                              [mbYes,mbNo], 0);
-    if buttonSelected = mrYes    then begin
-      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
-      FormMain.RESTRequest1.Params.AddItem('id',fixedID);
-      FormMain.RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
-      FormMain.RESTRequest1.Execute;
-      ConsoleMessage(FormMain.RESTResponse1.JSONText);
-      if FormSettings.CheckBox_WinNotification.Checked then
-        RunNotification(fixedName+' Enabled');
-    end;
 
-    if buttonSelected = mrNo    then  begin
-      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
-      FormMain.RESTRequest1.Params.AddItem('id',fixedID);
-      FormMain.RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
-      FormMain.RESTRequest1.Execute;
-      ConsoleMessage(FormMain.RESTResponse1.JSONText);
-      if FormSettings.CheckBox_WinNotification.Checked then
-        RunNotification(fixedName+' Disabled');
-    end;
 end;
+
 
 procedure TFormMain.StringGrid1DblClick(Sender: TObject);
 begin
@@ -210,7 +201,7 @@ begin
   end;
   finally
     StringGrid2File(StringGrid1,LocalAppDataConfigPath+SCHEDULE_FILE);
-    ConsoleMessage('Added '+ComboBox3.Text+' to '+SCHEDULE_FILE);
+    ConsoleMessage('Added '+ComboBox1.Text+' to '+SCHEDULE_FILE);
   end;
 end;
 
@@ -220,7 +211,7 @@ begin
     ListBox2.Items.SaveToFile(LocalAppDataConfigPath+DEVICES_LIST_FILE);
     Item := TMenuItem.Create(PopupMenu1);
     Item.Caption := listbox1.items[listbox1.itemindex];
-    Item.OnClick := PopupClickAPICommand;
+    Item.OnClick := PopupClickAPICommand.Send;
     PopupMenu1.Items.Add(Item);
     ConsoleMessage('Added '+Item.Caption);
 end;
@@ -239,15 +230,30 @@ begin
       for x := 0 to listbox2.items.Count -1 do begin
         Item := TMenuItem.Create(PopupMenu1);
         Item.Caption := listbox2.items[x];
-        Item.OnClick := PopupClickAPICommand;
+        Item.OnClick := PopupClickAPICommand.Send;
         PopupMenu1.Items.Add(Item);
       end;
     end;
 end;
 
-procedure TFormMain.CheckBox1Click(Sender: TObject);
+procedure TFormMain.ButtonAddHotkeyClick(Sender: TObject);
 begin
-  ConsoleMessage('asd');
+  { Registering a hotkey Ctrl+Alt+F5 }
+  //RegisterHotKey(Handle, 0, MOD_CONTROL or MOD_ALT, VK_F1);
+  if ComboBox7.Text='Enable' then begin
+    fixedHotKey := ListBox3.Count;
+    ListBox3.Items.add('F'+IntToStr(1+(fixedHotKey))+' - '+ComboBox8.Text);
+    AddHotKeyEnable(Handle,fixedHotKey);
+    ConsoleMessage('Added '+ComboBox8.Text+' CTRL-ALT-F'+IntToStr(1+(fixedHotKey)));
+  end
+  else begin
+    fixedHotKey := ListBox4.Count;//ComboBox5.Text+'-ALT-'+ComboBox6.Text;
+    ListBox4.Items.add('F'+IntToStr(1+(fixedHotKey))+' - '+ComboBox8.Text);
+    AddHotKeyDisable(Handle,fixedHotKey);
+    ConsoleMessage('Added '+ComboBox8.Text+' SHIFT-ALT-F'+IntToStr(1+(fixedHotKey)));
+  end;
+  ListBox3.Items.SaveToFile(LocalAppDataConfigPath+HOTKEY_ENABLE_FILE);
+  ListBox4.Items.SaveToFile(LocalAppDataConfigPath+HOTKEY_DISABLE_FILE);
 end;
 
 procedure TFormMain.AutoSizeCol(Grid: TStringGrid; Column: integer);
@@ -264,22 +270,17 @@ begin
 end;
 
 procedure TFormMain.FormActivate(Sender: TObject);
-var I:Integer;
+var I,O:Integer;
 begin
-  ListBox2.Items.SaveToFile(LocalAppDataConfigPath+DEVICES_LIST_FILE);
+  PageControl1.ActivePageIndex :=0; //Active tabb 1
+  PageControl2.ActivePageIndex :=0; //Active tabb 2
+
+  { SCHEDULE TABB }
   with stringgrid1 do  begin
-  cells[0,0]:='Device';
-  cells[1,0]:='Time';
-  cells[2,0]:='Action';
-
-  //cells[0,1]:='';
-  //cells[1,1]:=ListBox2.Items[0];
-  //cells[2,1]:=TimeToStr(Now);
-  //cells[3,1] := '';
-
+    cells[0,0]:='Device';
+    cells[1,0]:='Time';
+    cells[2,0]:='Action';
   end;
-  //for I := 0 to ListBox2.Items.Count -1 do
-    //ComboBox1.Items.Add(ListBox2.Items[I]);
 
   for I := 0 to 23 do
     ComboBox2.Items.Add(ZeroFixTime(I.ToString));
@@ -287,47 +288,111 @@ begin
   for I := 0 to 60 do
     ComboBox3.Items.Add(ZeroFixTime(I.ToString));
 
-  //ComboBox1.Text := ListBox2.Items[0];
-  //ComboBox2.Text := '12';
-  //ComboBox3.Text := '00';
   ComboBox4.Text := ComboBox4.Items[0];
-  PageControl1.ActivePageIndex :=0;
-  PageControl2.ActivePageIndex :=1;
+  SendMessage(Memo1.Handle, EM_LINESCROLL, 0,Memo1.Lines.Count);
+
+  { HOTKEYS TABB }
+  ComboBox8.Text := ComboBox8.Items[0];
+
+end;
+
+procedure TFormMain.WMHotKey(var Msg: TWMHotKey);
+var I,L:Integer;
+begin
+  { This procedure is called when a window message WM_HOTKEY }
+  { We perform additional actions }
+  inherited;  // We give the form to process the message, if she already has its handler
+  Beep;
+  for I := 0 to ListBox3.Count do begin
+    if Cardinal(Msg.HotKey) = I then begin
+      fixedCaption := ExtractText(ListBox3.Items[I],':','/');
+      fixedID := StringReplace(fixedCaption,' ','',[rfReplaceAll, rfIgnoreCase]);
+      fixedName := ExtractText(ListBox3.Items[I],'/','.');
+      //ShowChoiseMessage(fixedID,fixedName);
+      RESTRequest1.Params.AddItem('id',fixedID);
+      RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
+      try
+        RESTRequest1.Execute;
+      finally
+        ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
+        ConsoleMessage(RESTResponse1.JSONText);
+        if FormSettings.CheckBox_WinNotification.Checked then
+          RunNotification(fixedName+' Enabled');
+      end;
+
+    end;
+  end;
+
+  for L := 0 to ListBox4.Count do begin
+    if Cardinal(Msg.HotKey) = (100+L) then begin
+      fixedCaption := ExtractText(ListBox4.Items[L],':','/');
+      fixedID := StringReplace(fixedCaption,' ','',[rfReplaceAll, rfIgnoreCase]);
+      fixedName := ExtractText(ListBox4.Items[L],'/','.');
+      //ShowChoiseMessage(fixedID,fixedName);
+      RESTRequest1.Params.AddItem('id',fixedID);
+      RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
+      try
+        RESTRequest1.Execute;
+      finally
+        ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
+        ConsoleMessage(RESTResponse1.JSONText);
+        if FormSettings.CheckBox_WinNotification.Checked then
+          RunNotification(fixedName+' Disabled');
+      end;
+    end;
+  end;
+
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
-var x:Integer;
+var x,I:Integer;
 begin
-  Application.OnMinimize := OnMinimize;
-  FilePath := ExtractFilePath(Application.ExeName);
+  Application.OnMinimize := OnMinimize; //Remove from taskbar fix
+
   ConsoleMessage('Thanks for using '+Application.Title);
   ConsoleMessage('Version: '+GetAppVersionStr);
-  ConsoleMessage('Looking for devices:');
+
+  { Load device list }
+  ConsoleMessage('Looking for device list:');
   ConsoleMessage(LocalAppDataConfigPath+DEVICES_LIST_FILE);
   if fileexists(LocalAppDataConfigPath+DEVICES_LIST_FILE)    then begin
     ListBox2.Items.LoadFromFile(LocalAppDataConfigPath+DEVICES_LIST_FILE);
+    ComboBox8.Items.LoadFromFile(LocalAppDataConfigPath+DEVICES_LIST_FILE); //Hotkey device name
     for x := 0 to listbox2.items.Count -1 do begin
       Item := TMenuItem.Create(PopupMenu1);
       Item.Caption := listbox2.items[x];
-      Item.OnClick := PopupClickAPICommand;
+      Item.OnClick := PopupClickAPICommand.Send;
       PopupMenu1.Items.Add(Item);
       ConsoleMessage('Added: '+Item.Caption);
     end;
     ConsoleMessage(x.ToString+' devices loaded.');
   end;
+
+  { Load schedule list }
   ConsoleMessage('Looking for schedule list:');
   ConsoleMessage(LocalAppDataConfigPath+SCHEDULE_FILE);
   if not fileexists(LocalAppDataConfigPath+SCHEDULE_FILE) then begin
     StringGrid2File(StringGrid1,LocalAppDataConfigPath+SCHEDULE_FILE);
-    ConsoleMessage('Faild load '+SCHEDULE_FILE+' creating new..');
-  end
-  else begin
+    ConsoleMessage('Could not find '+SCHEDULE_FILE+' creating new..');
+  end  else  begin
     File2StringGrid(StringGrid1,LocalAppDataConfigPath+SCHEDULE_FILE);
-    ConsoleMessage('Loaded '+SCHEDULE_FILE);
+    ConsoleMessage('Loaded '+SCHEDULE_FILE+' Added '+(StringGrid1.RowCount-1).ToString+' schedules.');
+  end;
+
+  { Load hotkeys }
+  if not (fileexists(LocalAppDataConfigPath+HOTKEY_ENABLE_FILE) and fileexists(LocalAppDataConfigPath+HOTKEY_DISABLE_FILE) ) then begin
+    ConsoleMessage('Could not find '+HOTKEY_ENABLE_FILE+' or '+HOTKEY_DISABLE_FILE+' creating new..');
+    ListBox3.Items.SaveToFile(LocalAppDataConfigPath+HOTKEY_ENABLE_FILE);
+    ListBox4.Items.SaveToFile(LocalAppDataConfigPath+HOTKEY_DISABLE_FILE);
+  end  else  begin
+    ListBox3.Items.LoadFromFile(LocalAppDataConfigPath+HOTKEY_ENABLE_FILE);
+    ListBox4.Items.LoadFromFile(LocalAppDataConfigPath+HOTKEY_DISABLE_FILE);
+    ConsoleMessage('Loaded Hotkeys files. Added '+IntToStr(ListBox3.Count+ListBox4.Count)+' hotkeys.');
   end;
 end;
 
 procedure TFormMain.FormDestroy(Sender: TObject);
+var I:Integer;
 begin
   RESTClient1.Destroy;
   RESTRequest1.Destroy;
@@ -337,7 +402,14 @@ begin
   TrayIcon1.Destroy;
   NotificationCenter1.Destroy;
   ListBox2.Items.SaveToFile(LocalAppDataConfigPath+DEVICES_LIST_FILE);
+  ListBox3.Items.SaveToFile(LocalAppDataConfigPath+HOTKEY_ENABLE_FILE);
+  ListBox4.Items.SaveToFile(LocalAppDataConfigPath+HOTKEY_DISABLE_FILE);
   StringGrid2File(StringGrid1,LocalAppDataConfigPath+SCHEDULE_FILE);
+  // Unregisters a hotkeys
+  for I := 0 to ListBox3.Count do
+    UnRegisterHotKey(Handle, I);
+  for I := 0 to ListBox4.Count do
+    UnRegisterHotKey(Handle, I);
 end;
 
 procedure TFormMain.FormResize(Sender: TObject);
@@ -372,11 +444,14 @@ begin
     fixedName := StringReplace(SelectedTabbItemName,' ','',[rfReplaceAll, rfIgnoreCase]);
     RESTRequest1.Params.AddItem('id',fixedID);
     RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
-    RESTRequest1.Execute;
-    ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
-    ConsoleMessage(RESTResponse1.JSONText);
-    if FormSettings.CheckBox_WinNotification.Checked then
-      RunNotification(fixedName+' Disabled');
+    try
+      RESTRequest1.Execute;
+    finally
+      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
+      ConsoleMessage(RESTResponse1.JSONText);
+      if FormSettings.CheckBox_WinNotification.Checked then
+        RunNotification(fixedName+' Disabled');
+    end;
 end;
 
 procedure TFormMain.ImageDisableMouseDown(Sender: TObject; Button: TMouseButton;
@@ -397,11 +472,14 @@ begin
     fixedName := StringReplace(SelectedTabbItemName,' ','',[rfReplaceAll, rfIgnoreCase]);
     RESTRequest1.Params.AddItem('id',fixedID);
     RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
-    RESTRequest1.Execute;
-    ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
-    ConsoleMessage(RESTResponse1.JSONText);
-    if FormSettings.CheckBox_WinNotification.Checked then
-      RunNotification(fixedName+' Enabled');
+    try
+      RESTRequest1.Execute;
+    finally
+      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
+      ConsoleMessage(RESTResponse1.JSONText);
+      if FormSettings.CheckBox_WinNotification.Checked then
+        RunNotification(fixedName+' Enabled');
+    end;
 end;
 
 procedure TFormMain.ImageEnableMouseDown(Sender: TObject; Button: TMouseButton;
@@ -470,28 +548,7 @@ procedure TFormMain.ListBox1DblClick(Sender: TObject);
 begin
     fixedID := StringReplace(SelectedTabbItemID,' ','',[rfReplaceAll, rfIgnoreCase]);
     fixedName := StringReplace(SelectedTabbItemName,' ','',[rfReplaceAll, rfIgnoreCase]);
-    buttonSelected := MessageDlg('Chose what to do with '+fixedName,mtCustom,
-                              [mbYes,mbNo], 0);
-    if buttonSelected = mrYes    then begin
-      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
-      RESTRequest1.Params.AddItem('id',fixedID);
-      RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
-      RESTRequest1.Execute;
-      ConsoleMessage(RESTResponse1.JSONText);
-      if FormSettings.CheckBox_WinNotification.Checked then
-        RunNotification(fixedName+' Enabled');
-    end;
-
-    if buttonSelected = mrNo    then  begin
-      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
-      RESTRequest1.Params.AddItem('id',fixedID);
-      RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
-      RESTRequest1.Execute;
-      ConsoleMessage(RESTResponse1.JSONText);
-      if FormSettings.CheckBox_WinNotification.Checked then
-        RunNotification(fixedName+' Disabled');
-    end;
-    //ConsoleMessage('ID: '+fixedID);
+    ShowChoiseMessage(fixedID,fixedName);
 end;
 
 procedure TFormMain.ListBox2Click(Sender: TObject);
@@ -503,30 +560,22 @@ end;
 
 procedure TFormMain.ListBox2DblClick(Sender: TObject);
 begin
+    TMyThread.Create(false);
     fixedID := StringReplace(SelectedTabbItemID,' ','',[rfReplaceAll, rfIgnoreCase]);
     fixedName := StringReplace(SelectedTabbItemName,' ','',[rfReplaceAll, rfIgnoreCase]);
-    buttonSelected := MessageDlg('Chose what to do with '+fixedName,mtCustom,
-                              [mbYes,mbNo], 0);
-    if buttonSelected = mrYes    then begin
-      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
-      RESTRequest1.Params.AddItem('id',fixedID);
-      RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
-      RESTRequest1.Execute;
-      ConsoleMessage(RESTResponse1.JSONText);
-      if FormSettings.CheckBox_WinNotification.Checked then
-        RunNotification(fixedName+' Enabled');
-    end;
+    ShowChoiseMessage(fixedID,fixedName);
+end;
 
-    if buttonSelected = mrNo    then  begin
-      ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
-      RESTRequest1.Params.AddItem('id',fixedID);
-      RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
-      RESTRequest1.Execute;
-      ConsoleMessage(RESTResponse1.JSONText);
-      if FormSettings.CheckBox_WinNotification.Checked then
-        RunNotification(fixedName+' Disabled');
-    end;
-    //ConsoleMessage('ID: '+fixedID);
+procedure TFormMain.ListBox3DblClick(Sender: TObject);
+begin
+  ListBox3.Items.Delete(ListBox3.ItemIndex);
+  UnRegisterHotKey(Handle, ListBox3.ItemIndex);
+end;
+
+procedure TFormMain.ListBox4DblClick(Sender: TObject);
+begin
+  ListBox4.Items.Delete(ListBox4.ItemIndex);
+  UnRegisterHotKey(Handle, ListBox4.ItemIndex);
 end;
 
 procedure TFormMain.OAuth1Authenticator1Authenticate(
@@ -550,20 +599,20 @@ begin
   Hide;
 end;
 
-procedure TFormMain.TabSheet1Show(Sender: TObject);
+procedure TFormMain.TabSheetDeviceListShow(Sender: TObject);
 begin
   Button2.Enabled := False;
   Button3.Enabled := False;
 end;
 
-procedure TFormMain.TabSheet2Show(Sender: TObject);
+procedure TFormMain.TabSheetTaskbarListShow(Sender: TObject);
 begin
   Button2.Enabled := False;
   Button3.Enabled := False;
 end;
 
 procedure TFormMain.Timer1Timer(Sender: TObject);
-var iRow:Integer;
+var I,iRow:Integer;
 begin
   for iRow := 0 to stringgrid1.RowCount -1 do  begin
       if StringGrid1.Cells[1,iRow]=TimeToStr(Now) then  begin
@@ -572,21 +621,28 @@ begin
         if StringGrid1.Cells[2,iRow]='ON' then  begin
           RESTRequest1.Params.AddItem('id',fixedID);
           RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_ON;
-          RESTRequest1.Execute;
-          ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
-          ConsoleMessage(RESTResponse1.JSONText);
-          if FormSettings.CheckBox_WinNotification.Checked then
-          RunNotification(fixedName+' Enabled');
+          try
+            RESTRequest1.Execute;
+          finally
+            ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
+            ConsoleMessage(RESTResponse1.JSONText);
+            if FormSettings.CheckBox_WinNotification.Checked then
+              RunNotification(fixedName+' Enabled');
+          end;
         end else if StringGrid1.Cells[2,iRow]='OFF' then begin
           RESTRequest1.Params.AddItem('id',fixedID);
           RESTClient1.BaseURL := API_URL + REQUEST_JSON + DEVICE_OFF;
-          RESTRequest1.Execute;
-          ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
-          ConsoleMessage(RESTResponse1.JSONText);
-          if FormSettings.CheckBox_WinNotification.Checked then
-          RunNotification(fixedName+' Disabled');
+          try
+            RESTRequest1.Execute;
+          finally
+            ConsoleMessage('ID: '+fixedID+' Name: '+fixedName);
+            ConsoleMessage(RESTResponse1.JSONText);
+            if FormSettings.CheckBox_WinNotification.Checked then
+              RunNotification(fixedName+' Disabled');
+          end;
         end;
       end;
+  //When the procedure ends, the thread ends.
   end;
 end;
 

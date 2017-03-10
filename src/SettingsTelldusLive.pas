@@ -2,11 +2,9 @@ unit SettingsTelldusLive;
 
 interface
 
-uses
-System.SysUtils;
 
 const
-    API_URL = 'https://api.telldus.com'; { Use https://.... in production}
+    API_URL = 'https://api.telldus.com'; // Use https in production
     ACCESS_TOKEN = '/oauth/accessToken';
     REQUEST_TOKEN = '/oauth/requestToken';
     AUTHORIZE_TOKEN= '/oauth/authorize';
@@ -26,6 +24,10 @@ const
     CONFIG_EXT='.ini';
     DEVICES_LIST_FILE = 'DeviceList.ini';
     SCHEDULE_FILE ='ScheduleList.ini';
+    HOTKEY_ENABLE_FILE ='HotkeysEnable.ini';
+    HOTKEY_DISABLE_FILE ='HotkeysDisable.ini';
+
+
 var
     LOGGING: Boolean;
 

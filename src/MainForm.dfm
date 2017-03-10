@@ -46,6 +46,7 @@ object FormMain: TFormMain
       DoubleBuffered = False
       ParentBackground = False
       ParentDoubleBuffered = False
+      ShowCaption = False
       TabOrder = 0
       object Panel4: TPanel
         Left = 0
@@ -96,14 +97,14 @@ object FormMain: TFormMain
         Margins.Top = 1
         Margins.Right = 0
         Margins.Bottom = 0
-        ActivePage = TabSheet2
+        ActivePage = TabSheetTaskbarList
         Align = alClient
         Style = tsButtons
         TabOrder = 1
         TabWidth = 80
-        object TabSheet1: TTabSheet
+        object TabSheetDeviceList: TTabSheet
           Caption = 'Device List'
-          OnShow = TabSheet1Show
+          OnShow = TabSheetDeviceListShow
           object ListBox1: TListBox
             Left = 0
             Top = 0
@@ -121,10 +122,10 @@ object FormMain: TFormMain
             OnDblClick = ListBox1DblClick
           end
         end
-        object TabSheet2: TTabSheet
+        object TabSheetTaskbarList: TTabSheet
           Caption = 'Taskbar List'
           ImageIndex = 1
-          OnShow = TabSheet2Show
+          OnShow = TabSheetTaskbarListShow
           object ListBox2: TListBox
             Left = 0
             Top = 0
@@ -150,10 +151,10 @@ object FormMain: TFormMain
       Margins.Top = 1
       Margins.Right = 0
       Margins.Bottom = 0
-      ActivePage = TabSheet4
+      ActivePage = TabSheetHotKey
       Align = alClient
       TabOrder = 1
-      object TabSheet3: TTabSheet
+      object TabSheetConsole: TTabSheet
         Caption = 'Console'
         object Memo1: TMemo
           AlignWithMargins = True
@@ -170,10 +171,11 @@ object FormMain: TFormMain
           BevelOuter = bvNone
           BorderStyle = bsNone
           ReadOnly = True
+          ScrollBars = ssVertical
           TabOrder = 0
         end
       end
-      object TabSheet4: TTabSheet
+      object TabSheetSchedule: TTabSheet
         Caption = 'Schedule'
         ImageIndex = 1
         object StringGrid1: TStringGrid
@@ -213,6 +215,7 @@ object FormMain: TFormMain
           Height = 25
           Align = alBottom
           BevelOuter = bvNone
+          ShowCaption = False
           TabOrder = 1
           object Label1: TLabel
             Left = 203
@@ -292,6 +295,100 @@ object FormMain: TFormMain
             AutoDropDown = True
             TabOrder = 3
             Text = '0'
+          end
+        end
+      end
+      object TabSheetHotKey: TTabSheet
+        Caption = 'HotKeys'
+        ImageIndex = 2
+        object Panel6: TPanel
+          Left = 0
+          Top = 165
+          Width = 379
+          Height = 25
+          Align = alBottom
+          BevelOuter = bvNone
+          ShowCaption = False
+          TabOrder = 0
+          object ButtonAddHotkey: TButton
+            Left = 310
+            Top = 2
+            Width = 70
+            Height = 23
+            Caption = 'Add hotkey'
+            TabOrder = 0
+            OnClick = ButtonAddHotkeyClick
+          end
+          object ComboBox7: TComboBox
+            Left = 200
+            Top = 3
+            Width = 65
+            Height = 21
+            TabOrder = 1
+            Text = 'Enable'
+            Items.Strings = (
+              'Enable'
+              'Disable')
+          end
+          object ComboBox8: TComboBox
+            Left = 0
+            Top = 3
+            Width = 195
+            Height = 21
+            TabOrder = 2
+            Text = 'ComboBox8'
+          end
+        end
+        object GroupBox1: TGroupBox
+          AlignWithMargins = True
+          Left = 3
+          Top = 3
+          Width = 185
+          Height = 159
+          Align = alLeft
+          Caption = ' Enable  -  CTRL+ALT+F1-12 '
+          TabOrder = 1
+          object ListBox3: TListBox
+            AlignWithMargins = True
+            Left = 5
+            Top = 15
+            Width = 175
+            Height = 142
+            Margins.Top = 0
+            Margins.Bottom = 0
+            Align = alClient
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            BorderStyle = bsNone
+            ItemHeight = 13
+            TabOrder = 0
+            OnDblClick = ListBox3DblClick
+          end
+        end
+        object GroupBox2: TGroupBox
+          AlignWithMargins = True
+          Left = 194
+          Top = 3
+          Width = 185
+          Height = 159
+          Align = alLeft
+          Caption = ' Disable  -  SHIFT+ALT+F1-12 '
+          TabOrder = 2
+          object ListBox4: TListBox
+            AlignWithMargins = True
+            Left = 5
+            Top = 15
+            Width = 175
+            Height = 142
+            Margins.Top = 0
+            Margins.Bottom = 0
+            Align = alClient
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            BorderStyle = bsNone
+            ItemHeight = 13
+            TabOrder = 0
+            OnDblClick = ListBox4DblClick
           end
         end
       end
@@ -597,7 +694,7 @@ object FormMain: TFormMain
     Client = RESTClient1
     Params = <>
     Response = RESTResponse1
-    Timeout = 4000
+    Timeout = 2500
     SynchronizedEvents = False
     Left = 400
     Top = 224
