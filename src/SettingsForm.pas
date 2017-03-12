@@ -114,9 +114,6 @@ begin
 
   FClient := THTTPClient.Create;
   FClient.OnReceiveData := ReceiveDataEvent;
-
-  if FileExists(ChangeFileExt(Application.ExeName, '.old')) then
-    DeleteFile(ChangeFileExt(Application.ExeName, '.old'));
 end;
 
 procedure TFormSettings.ImageLocalFolderClick(Sender: TObject);
@@ -330,9 +327,9 @@ begin
     FDownloadStream := nil;
     ProgressBarDownload.Position := 100;
     LabelCheckForUpdate.Enabled := True;
-    // restart and shutdown old session
     ShellExecute(Application.Handle, 'runas', PChar(Application.ExeName), PChar(ExtractFilePath(Application.ExeName)), nil, SW_NORMAL);
-    Application.Terminate;
+    FormSettings.Close;
+    FormMain.Close;
   end;
 end;
 

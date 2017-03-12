@@ -407,11 +407,11 @@ begin
   RenameFile (Application.ExeName, bakName);
   CopyFile(PChar(LocalAppDataConfigPath + Application.ExeName), PChar(Application.ExeName),true);
   try
-    //FormSettings.DownloadNewFile;
+    FormSettings.DownloadNewFile;
   finally
   // restart and shutdown old session
-  //ShellExecute(Application.Handle, 'runas', PChar(Application.ExeName), PChar(ExtractFilePath(Application.ExeName)), nil, SW_NORMAL);
-  //Application.Terminate;
+  ShellExecute(Application.Handle, 'runas', PChar(Application.ExeName), PChar(ExtractFilePath(Application.ExeName)), nil, SW_NORMAL);
+  Application.Terminate;
   end;
 end;
 
