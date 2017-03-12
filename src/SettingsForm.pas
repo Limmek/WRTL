@@ -327,9 +327,8 @@ begin
     FDownloadStream := nil;
     ProgressBarDownload.Position := 100;
     LabelCheckForUpdate.Enabled := True;
-    ShellExecute(Application.Handle, 'runas', PChar(Application.ExeName), PChar(ExtractFilePath(Application.ExeName)), nil, SW_NORMAL);
-    FormSettings.Close;
-    FormMain.Close;
+    ShellExecute(FormMain.Handle, 'runas', PChar(Application.ExeName), PChar(ExtractFilePath(Application.ExeName)), nil, SW_NORMAL);
+    Application.Terminate;
   end;
 end;
 

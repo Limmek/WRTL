@@ -294,7 +294,8 @@ begin
 
   { HOTKEYS TABB }
   ComboBox8.Text := ComboBox8.Items[0];
-
+  if FileExists(ChangeFileExt(Application.ExeName, '.old')) then
+    DeleteFile(ChangeFileExt(Application.ExeName, '.old'));
 end;
 
 procedure TFormMain.WMHotKey(var Msg: TWMHotKey);
@@ -349,8 +350,6 @@ procedure TFormMain.FormCreate(Sender: TObject);
 var x,I:Integer;
 begin
   Application.OnMinimize := OnMinimize; //Remove from taskbar fix
-  if FileExists(ChangeFileExt(Application.ExeName, '.old')) then
-    DeleteFile(ChangeFileExt(Application.ExeName, '.old'));
 
   ConsoleMessage('Thanks for using '+Application.Title);
   ConsoleMessage('Version: '+GetAppVersionStr);
