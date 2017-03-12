@@ -1,5 +1,7 @@
 program WinRemoteTelldusLive;
 
+{$R *.dres}
+
 uses
   Vcl.Forms,
   MainForm in 'MainForm.pas' {FormMain},

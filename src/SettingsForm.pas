@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, ShellApi,
-  Vcl.Imaging.pngimage, Vcl.ComCtrls, Vcl.Tabs, Registry;
+  Vcl.Imaging.pngimage, Vcl.ComCtrls, Vcl.Tabs, Registry, IdBaseComponent,
+  IdComponent, IdTCPConnection, IdTCPClient, IdHTTP;
 
 type
   TFormSettings = class(TForm)
@@ -38,6 +39,8 @@ type
     GroupBox2: TGroupBox;
     GroupBox3: TGroupBox;
     GroupBox4: TGroupBox;
+    LabelCheckForUpdate: TLabel;
+    IdHTTP1: TIdHTTP;
     procedure ImageLocalFolderClick(Sender: TObject);
     procedure ImageSaveClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -62,21 +65,33 @@ type
     procedure ImageLocalFolderMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure Label5Click(Sender: TObject);
+    procedure LabelCheckForUpdateClick(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
   end;
 
+  TMyUpdateThread = class(TThread)
+  private
+    { Private declarations }
+    
+  protected
+    procedure Execute; override;
+    procedure OnTerminate(Sender: TObject);
+  end;
+
 var
   FormSettings: TFormSettings;
+  MyClass: TMyUpdateThread;
+
 
 implementation
+
 
 {$R *.dfm}
 
 uses MainForm, Functions, Procedures, SettingsTelldusLive;
-
 
 
 procedure TFormSettings.FormCreate(Sender: TObject);
@@ -217,6 +232,35 @@ procedure TFormSettings.Label5Click(Sender: TObject);
 begin
   ShellExecute(0, 'Open', PChar(API_URL), nil, nil, SW_SHOWNORMAL);
 end;
+
+
+procedure TMyUpdateThread.Execute;
+begin
+  ConsoleMessage('Checking for update..');
+  ConsoleMessage(CheckVersion(VERSION_URL));
+  if not (trim(CheckVersion(VERSION_URL)) = trim(GetAppVersionStr)) then begin
+    ShowMessage('New version available '+CheckVersion(VERSION_URL));
+    UpdateMyself;
+  end;
+end;
+
+procedure TMyUpdateThread.OnTerminate(Sender: TObject);
+begin
+  FreeAndNil(Self);
+end;
+
+procedure TFormSettings.LabelCheckForUpdateClick(Sender: TObject);
+begin
+  try
+    MyClass := TMyUpdateThread.Create;
+    MyClass.FreeOnTerminate := False;
+  finally
+    if MyClass.ReturnValue =1 then
+     MyClass.Destroy;
+  end;
+
+end;
+
 
 procedure TFormSettings.LabelGitClick(Sender: TObject);
 begin

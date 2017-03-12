@@ -109,6 +109,7 @@ type
     procedure ButtonAddHotkeyClick(Sender: TObject);
     procedure ListBox3DblClick(Sender: TObject);
     procedure ListBox4DblClick(Sender: TObject);
+    procedure PageControl2Change(Sender: TObject);
   private
     { Private declarations }
     procedure WMHotKey(var Msg: TWMHotKey); message WM_HOTKEY;
@@ -117,7 +118,7 @@ type
   end;
 
   TMyThread = class(TThread)
-  public
+  protected
     procedure Execute; override;
 end;
 
@@ -355,7 +356,12 @@ begin
   { Load device list }
   ConsoleMessage('Looking for device list:');
   ConsoleMessage(LocalAppDataConfigPath+DEVICES_LIST_FILE);
-  if fileexists(LocalAppDataConfigPath+DEVICES_LIST_FILE)    then begin
+  if Not DirectoryExists(LocalAppDataConfigPath) then begin
+     CreateDir(LocalAppDataConfigPath);
+     ConsoleMessage('Creating folder..');
+  end;
+
+  if FileExists(LocalAppDataConfigPath+DEVICES_LIST_FILE)    then begin
     ListBox2.Items.LoadFromFile(LocalAppDataConfigPath+DEVICES_LIST_FILE);
     ComboBox8.Items.LoadFromFile(LocalAppDataConfigPath+DEVICES_LIST_FILE); //Hotkey device name
     for x := 0 to listbox2.items.Count -1 do begin
@@ -371,7 +377,7 @@ begin
   { Load schedule list }
   ConsoleMessage('Looking for schedule list:');
   ConsoleMessage(LocalAppDataConfigPath+SCHEDULE_FILE);
-  if not fileexists(LocalAppDataConfigPath+SCHEDULE_FILE) then begin
+  if not FileExists(LocalAppDataConfigPath+SCHEDULE_FILE) then begin
     StringGrid2File(StringGrid1,LocalAppDataConfigPath+SCHEDULE_FILE);
     ConsoleMessage('Could not find '+SCHEDULE_FILE+' creating new..');
   end  else  begin
@@ -597,6 +603,14 @@ end;
 procedure TFormMain.OnMinimize(Sender:TObject);
 begin
   Hide;
+end;
+
+procedure TFormMain.PageControl2Change(Sender: TObject);
+begin
+  if TabSheetHotKey.Visible and FormSettings.CheckBoxEnableHotkeys.Enabled then begin
+    Panel2.Caption := 'Hotkeys are disabled!';
+  end else
+    Panel2.Caption := '';
 end;
 
 procedure TFormMain.TabSheetDeviceListShow(Sender: TObject);

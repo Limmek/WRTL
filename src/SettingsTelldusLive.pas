@@ -16,6 +16,8 @@ const
     DEVICE_ON = '/device/turnOn';
     DEVICE_OFF = '/device/turnOff';
 
+    DOWNLOAD_URL = 'https://github.com/Limmek/WRTL/releases/download/1.0/WinRemoteTelldusLive.exe';
+    VERSION_URL = 'https://raw.githubusercontent.com/Limmek/WRTL/master/VERSION';
     ABOUT_GIT = 'https://github.com/Limmek/WRTL';
     ABOUT_INFO = 'This application is used to call the TelldusLive API and remotely control your devices from any computer.';
 

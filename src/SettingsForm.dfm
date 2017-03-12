@@ -302,7 +302,7 @@ object FormSettings: TFormSettings
     Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alBottom
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -315,6 +315,10 @@ object FormSettings: TFormSettings
     StyleElements = [seFont, seClient]
     object TabSheet1: TTabSheet
       Caption = 'Default Settings'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object CheckBox_AutoLoadDevices: TCheckBox
         AlignWithMargins = True
         Left = 15
@@ -332,11 +336,11 @@ object FormSettings: TFormSettings
       object CheckBox_SartWithWindows: TCheckBox
         AlignWithMargins = True
         Left = 15
-        Top = 26
+        Top = 20
         Width = 266
         Height = 20
         Margins.Left = 15
-        Margins.Top = 6
+        Margins.Top = 0
         Margins.Right = 15
         Margins.Bottom = 0
         Align = alTop
@@ -346,11 +350,11 @@ object FormSettings: TFormSettings
       object CheckBox_StartMinimized: TCheckBox
         AlignWithMargins = True
         Left = 15
-        Top = 78
+        Top = 40
         Width = 266
         Height = 20
         Margins.Left = 15
-        Margins.Top = 6
+        Margins.Top = 0
         Margins.Right = 15
         Margins.Bottom = 0
         Align = alTop
@@ -360,11 +364,11 @@ object FormSettings: TFormSettings
       object CheckBox_WinNotification: TCheckBox
         AlignWithMargins = True
         Left = 15
-        Top = 52
+        Top = 60
         Width = 266
         Height = 20
         Margins.Left = 15
-        Margins.Top = 6
+        Margins.Top = 0
         Margins.Right = 15
         Margins.Bottom = 0
         Align = alTop
@@ -374,28 +378,28 @@ object FormSettings: TFormSettings
       object CheckBox_LogToFile: TCheckBox
         AlignWithMargins = True
         Left = 15
-        Top = 104
-        Width = 98
-        Height = 22
+        Top = 100
+        Width = 266
+        Height = 20
         Margins.Left = 15
-        Margins.Top = 6
+        Margins.Top = 0
         Margins.Right = 15
         Margins.Bottom = 0
-        Align = alLeft
+        Align = alTop
         Caption = 'Enable logging'
         TabOrder = 4
       end
       object CheckBoxEnableHotkeys: TCheckBox
         AlignWithMargins = True
-        Left = 174
-        Top = 104
-        Width = 107
-        Height = 22
+        Left = 15
+        Top = 80
+        Width = 266
+        Height = 20
         Margins.Left = 15
-        Margins.Top = 6
+        Margins.Top = 0
         Margins.Right = 15
         Margins.Bottom = 0
-        Align = alRight
+        Align = alTop
         Caption = 'Enable hotkeys'
         TabOrder = 5
       end
@@ -497,7 +501,7 @@ object FormSettings: TFormSettings
         Margins.Bottom = 2
         Align = alBottom
         Alignment = taRightJustify
-        Caption = 'https://github.com'
+        Caption = 'https://github.com/limmek/wrtl'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clHighlight
         Font.Height = -12
@@ -505,19 +509,19 @@ object FormSettings: TFormSettings
         Font.Style = []
         ParentFont = False
         OnClick = LabelGitClick
-        ExplicitLeft = 186
-        ExplicitWidth = 105
+        ExplicitLeft = 118
+        ExplicitWidth = 173
       end
       object LabelAuthor: TLabel
         Left = 3
-        Top = 90
+        Top = 95
         Width = 38
         Height = 14
         Caption = 'Author'
       end
       object LabelVersion: TLabel
         Left = 3
-        Top = 105
+        Top = 110
         Width = 40
         Height = 14
         Caption = 'Version'
@@ -545,6 +549,37 @@ object FormSettings: TFormSettings
         WordWrap = True
         ExplicitHeight = 52
       end
+      object LabelCheckForUpdate: TLabel
+        Left = 3
+        Top = 75
+        Width = 97
+        Height = 16
+        Caption = 'Check for update'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clHighlight
+        Font.Height = -13
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        OnClick = LabelCheckForUpdateClick
+      end
     end
+  end
+  object IdHTTP1: TIdHTTP
+    AllowCookies = True
+    ProxyParams.BasicAuthentication = False
+    ProxyParams.ProxyPort = 0
+    Request.ContentLength = -1
+    Request.ContentRangeEnd = -1
+    Request.ContentRangeStart = -1
+    Request.ContentRangeInstanceLength = -1
+    Request.Accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    Request.BasicAuthentication = False
+    Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
+    Request.Ranges.Units = 'bytes'
+    Request.Ranges = <>
+    HTTPOptions = [hoForceEncodeParams]
+    Left = 92
+    Top = 344
   end
 end

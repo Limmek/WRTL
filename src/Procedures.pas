@@ -8,7 +8,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Taskbar,
   IPPeerClient, REST.Client, REST.Authenticator.OAuth, Data.Bind.Components, Data.Bind.ObjectScope, JSON, DBXJSON,
-  Vcl.Grids, Vcl.Menus, Math, Vcl.Buttons, Inifiles, Registry, shlobj, System.Notification;
+  Vcl.Grids, Vcl.Menus, Math, Vcl.Buttons, Inifiles, Registry, shlobj, System.Notification, idhttp, Shellapi;
 
 type
   PopupClickAPICommand = class(TObject)
@@ -35,6 +35,9 @@ Procedure ShowChoiseMessage(fixedID,fixedName:String);
 
 procedure AddHotKeyEnable(Handle:HWND; HotKey:Integer);
 procedure AddHotKeyDisable(Handle:HWND; HotKey:Integer);
+procedure UpdateMyself;
+procedure DownloadFile;
+
 
 implementation
 
@@ -70,6 +73,7 @@ begin
     RegisterHotKey(Handle, hkID, MOD_CONTROL or MOD_ALT, VK_F4 );
   end;
 end;
+
 
 procedure AddHotKeyDisable(Handle:HWND; HotKey:Integer);
 var hkID:Integer;
@@ -392,6 +396,45 @@ begin
 
 end;
 
+
+procedure UpdateMyself;
+var
+  bakName, appPath : string;
+begin
+  appPath := ExtractFilePath(Application.ExeName);
+  bakName := ChangeFileExt(Application.ExeName, '.old');
+  if FileExists(bakName) then
+    DeleteFile(bakName);
+  RenameFile (Application.ExeName, bakName);
+  CopyFile(PChar(LocalAppDataConfigPath + Application.ExeName), PChar(Application.ExeName),true);
+  try
+    DownloadFile();
+  finally
+  // restart and shutdown old session
+  ShellExecute(Application.Handle, 'runas', PChar(Application.ExeName), PChar(ExtractFilePath(Application.ExeName)), nil, SW_NORMAL);
+  Application.Terminate;
+  end;
+end;
+
+procedure DownloadFile;
+var
+  IdHTTP1: TIdHTTP;
+  Stream: TMemoryStream;
+begin
+
+  IdHTTP1 := TIdHTTP.Create(nil);
+  Stream := TMemoryStream.Create;
+  try
+    IdHTTP1.HandleRedirects := True;
+    IdHTTP1.Request.UserAgent := 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:12.0) Gecko/20100101 Firefox/12.0';
+    IdHTTP1.Get(DOWNLOAD_URL, Stream);
+    Stream.SaveToFile(ExtractFilePath(Application.ExeName)+Application.Title+'.exe');
+  finally
+    Stream.Free;
+    IdHTTP1.Free;
+    Application.Terminate;
+  end;
+end;
 
 
 end.

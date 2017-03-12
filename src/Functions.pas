@@ -5,7 +5,7 @@ interface
 uses SettingsTelldusLive,
 Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.UITypes,
 Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Menus,
-shlobj, MainForm, SettingsForm, Registry, Inifiles;
+shlobj, MainForm, SettingsForm, Registry, Inifiles, winInet, System.Net.HttpClient;
 
 function GetAppVersionStr: string;
 
@@ -23,8 +23,24 @@ function TrimLeadingZeros(const S: string): string;
 
 function MyMessageDlg(CONST Msg: string; DlgTypt: TmsgDlgType; button: TMsgDlgButtons;
   Caption: ARRAY OF string; dlgcaption: string): Integer;
+function CheckVersion(const AURL: string): string;
 
 implementation
+
+function CheckVersion(const AURL: string): string;
+var
+  HttpClient: THttpClient;
+  HttpResponse: IHttpResponse;
+begin
+  HttpClient := THTTPClient.Create;
+  HttpClient.AllowCookies := False;
+  try
+    HttpResponse := HttpClient.Get(AURL);
+    Result := HttpResponse.ContentAsString();
+  finally
+    HttpClient.Free;
+  end;
+end;
 
 function ZeroReturnOne(const I:Integer):Integer;
 begin
