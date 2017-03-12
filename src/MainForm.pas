@@ -271,7 +271,7 @@ begin
 end;
 
 procedure TFormMain.FormActivate(Sender: TObject);
-var I,O:Integer;
+var I:Integer;
 begin
   PageControl1.ActivePageIndex :=0; //Active tabb 1
   PageControl2.ActivePageIndex :=0; //Active tabb 2
@@ -347,7 +347,7 @@ begin
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
-var x,I:Integer;
+var x:Integer;
 begin
   Application.OnMinimize := OnMinimize; //Remove from taskbar fix
 
@@ -627,7 +627,7 @@ begin
 end;
 
 procedure TFormMain.Timer1Timer(Sender: TObject);
-var I,iRow:Integer;
+var iRow:Integer;
 begin
   for iRow := 0 to stringgrid1.RowCount -1 do  begin
       if StringGrid1.Cells[1,iRow]=TimeToStr(Now) then  begin

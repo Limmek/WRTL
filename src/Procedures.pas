@@ -246,7 +246,7 @@ begin
 end;
 
 procedure ReadConfig;
-var I,X:Integer;
+var I:Integer;
 begin
   Ini := TIniFile.Create( LocalAppDataConfigFile );
   try
