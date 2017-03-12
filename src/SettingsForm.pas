@@ -3,10 +3,11 @@ unit SettingsForm;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.UITypes,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, ShellApi,
-  Vcl.Imaging.pngimage, Vcl.ComCtrls, Vcl.Tabs, Registry, IdBaseComponent,
-  IdComponent, IdTCPConnection, IdTCPClient, IdHTTP;
+  Vcl.Imaging.pngimage, Vcl.ComCtrls, Vcl.Tabs, Registry, IdBaseComponent, Vcl.Graphics,
+  IdComponent, IdTCPConnection, IdTCPClient, System.Net.URLClient, System.Net.HttpClient,
+  System.Net.HttpClientComponent, System.Types;
 
 type
   TFormSettings = class(TForm)
@@ -40,7 +41,8 @@ type
     GroupBox3: TGroupBox;
     GroupBox4: TGroupBox;
     LabelCheckForUpdate: TLabel;
-    IdHTTP1: TIdHTTP;
+    ProgressBarDownload: TProgressBar;
+    LabelGlobalSpeed: TLabel;
     procedure ImageLocalFolderClick(Sender: TObject);
     procedure ImageSaveClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -66,32 +68,29 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure Label5Click(Sender: TObject);
     procedure LabelCheckForUpdateClick(Sender: TObject);
+    procedure ReceiveDataEvent(const Sender: TObject; AContentLength: Int64; AReadCount: Int64; var Abort: Boolean);
   private
     { Private declarations }
+      FClient: THTTPClient;
+      FGlobalStart: Cardinal;
+      FAsyncResponse: IHTTPResponse;
+      FDownloadStream: TStream;
+      procedure DoEndDownload(const AsyncResult: IAsyncResult);
   public
     { Public declarations }
-  end;
-
-  TMyUpdateThread = class(TThread)
-  private
-    { Private declarations }
-    
-  protected
-    procedure Execute; override;
-    procedure OnTerminate(Sender: TObject);
+    procedure DownloadNewFile;
   end;
 
 var
   FormSettings: TFormSettings;
-  MyClass: TMyUpdateThread;
-
 
 implementation
 
 
 {$R *.dfm}
 
-uses MainForm, Functions, Procedures, SettingsTelldusLive;
+uses MainForm, Functions, Procedures, SettingsTelldusLive,
+System.IOUtils;
 
 
 procedure TFormSettings.FormCreate(Sender: TObject);
@@ -112,6 +111,12 @@ begin
   end;
   Label5.Caption:=API_URL;
   PageControl1.ActivePageIndex :=0;
+
+  FClient := THTTPClient.Create;
+  FClient.OnReceiveData := ReceiveDataEvent;
+
+  if FileExists(ChangeFileExt(Application.ExeName, '.old')) then
+    DeleteFile(ChangeFileExt(Application.ExeName, '.old'));
 end;
 
 procedure TFormSettings.ImageLocalFolderClick(Sender: TObject);
@@ -162,7 +167,6 @@ begin
 
   Reg:= TRegistry.Create;
   try
-
     if Reg.KeyExists(KeyToFind) then
       ConsoleMessage('found '+ KeyToFind)
     else
@@ -233,34 +237,25 @@ begin
   ShellExecute(0, 'Open', PChar(API_URL), nil, nil, SW_SHOWNORMAL);
 end;
 
-
-procedure TMyUpdateThread.Execute;
+procedure TFormSettings.LabelCheckForUpdateClick(Sender: TObject);
+var
+  buttonSelected : Integer;
 begin
   ConsoleMessage('Checking for update..');
-  ConsoleMessage(CheckVersion(VERSION_URL));
   if not (trim(CheckVersion(VERSION_URL)) = trim(GetAppVersionStr)) then begin
-    ShowMessage('New version available '+CheckVersion(VERSION_URL));
-    UpdateMyself;
+    buttonSelected := MessageDlg('New version available '+CheckVersion(VERSION_URL), mtCustom, [mbYes,mbNo], 0);
+
+    if buttonSelected = mrNo    then begin
+      ConsoleMessage('Aborted.') ;
+      ConsoleMessage(CheckVersion(VERSION_URL));
+    end;
+
+    if buttonSelected = mrYes    then begin
+      ConsoleMessage(CheckVersion(VERSION_URL));
+      DownloadNewFile;
+    end;
   end;
 end;
-
-procedure TMyUpdateThread.OnTerminate(Sender: TObject);
-begin
-  FreeAndNil(Self);
-end;
-
-procedure TFormSettings.LabelCheckForUpdateClick(Sender: TObject);
-begin
-  try
-    MyClass := TMyUpdateThread.Create;
-    MyClass.FreeOnTerminate := False;
-  finally
-    if MyClass.ReturnValue =1 then
-     MyClass.Destroy;
-  end;
-
-end;
-
 
 procedure TFormSettings.LabelGitClick(Sender: TObject);
 begin
@@ -273,6 +268,93 @@ begin
   LabelVersion.Caption := 'Version: '+GetAppVersionStr;
   LabelAuthor.Caption := 'Creator: Jim A';
   LabelAbout.Caption := ABOUT_INFO;
+end;
+
+procedure TFormSettings.DownloadNewFile;
+var
+  LResponse: IHTTPResponse;
+  LFileName, bakName, URL: string;
+  LSize: Int64;
+begin
+  bakName := ChangeFileExt(Application.ExeName, '.old');
+  if FileExists(bakName) then
+    DeleteFile(bakName);
+  RenameFile (Application.ExeName, bakName);
+  CopyFile(PChar(LocalAppDataConfigPath + Application.ExeName), PChar(Application.ExeName),true);
+  LFileName := TPath.Combine(ExtractFilePath(Application.ExeName), Application.ExeName);
+  try
+    FAsyncResponse := nil;
+    URL := DOWNLOAD_URL;
+
+    LResponse := FClient.Head(URL);
+    LSize := LResponse.ContentLength;
+    ConsoleMessage(Format('Head response: %d - %s', [LResponse.StatusCode, LResponse.StatusText]));
+    LResponse := nil;
+
+    LabelGlobalSpeed.Visible := True;
+    ProgressBarDownload.Visible := True;
+    ProgressBarDownload.Max := 100;
+    ProgressBarDownload.Min := 0;
+    ProgressBarDownload.Position := 0;
+    LabelGlobalSpeed.Caption := 'Global speed: 0 KB/s';
+
+    ConsoleMessage(Format('Downloading: "%s" (%d Bytes) into "%s"' , [Application.ExeName, LSize, LFileName]));
+
+    // Create the file that is going to be dowloaded
+    FDownloadStream := TFileStream.Create(LFileName, fmCreate);
+    FDownloadStream.Position := 0;
+
+    FGlobalStart := TThread.GetTickCount;
+
+    // Start the download process
+    FAsyncResponse := FClient.BeginGet(DoEndDownload, URL, FDownloadStream);
+
+  finally
+    LabelCheckForUpdate.Enabled := FAsyncResponse = nil;
+    FAsyncREsponse := nil;
+  end;
+end;
+
+procedure TFormSettings.DoEndDownload(const AsyncResult: IAsyncResult);
+begin
+  try
+    FAsyncResponse := THTTPClient.EndAsyncHTTP(AsyncResult);
+    TThread.Synchronize(nil,
+      procedure
+      begin
+        ConsoleMessage('Download Finished!');
+        ConsoleMessage(Format('Status: %d - %s', [FAsyncResponse.StatusCode, FAsyncResponse.StatusText]));
+      end);
+  finally
+    FDownloadStream.Free;
+    FDownloadStream := nil;
+    ProgressBarDownload.Position := 100;
+    LabelCheckForUpdate.Enabled := True;
+    // restart and shutdown old session
+    ShellExecute(Application.Handle, 'runas', PChar(Application.ExeName), PChar(ExtractFilePath(Application.ExeName)), nil, SW_NORMAL);
+    Application.Terminate;
+  end;
+end;
+
+procedure TFormSettings.ReceiveDataEvent(const Sender: TObject; AContentLength, AReadCount: Int64;
+  var Abort: Boolean);
+var
+  LTime: Cardinal;
+  LSpeed: Integer;
+  LCancel: Boolean;
+begin
+  LCancel := Abort;
+  LTime := TThread.GetTickCount - FGlobalStart;
+  LSpeed := (AReadCount * 1000) div LTime;
+  TThread.Queue(nil,
+    procedure
+    begin
+      LCancel := not LabelCheckForUpdate.Enabled;
+      //ProgressBarDownload.Position := AReadCount;
+      ProgressBarDownload.StepIt();
+      LabelGlobalSpeed.Caption := Format('Global speed: %d KB/s', [LSpeed div 1024]);
+    end);
+  Abort := LCancel;
 end;
 
 end.

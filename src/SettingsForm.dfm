@@ -4,7 +4,7 @@ object FormSettings: TFormSettings
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Settings'
-  ClientHeight = 386
+  ClientHeight = 406
   ClientWidth = 304
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -38,7 +38,7 @@ object FormSettings: TFormSettings
     Left = 0
     Top = 0
     Width = 304
-    Height = 191
+    Height = 211
     Align = alClient
     BevelOuter = bvNone
     ParentBackground = False
@@ -158,7 +158,7 @@ object FormSettings: TFormSettings
   end
   object Panel2: TPanel
     Left = 0
-    Top = 346
+    Top = 366
     Width = 304
     Height = 40
     Align = alBottom
@@ -291,11 +291,19 @@ object FormSettings: TFormSettings
       OnMouseUp = ImageLogFileMouseUp
       ExplicitLeft = 195
     end
+    object LabelGlobalSpeed: TLabel
+      Left = 56
+      Top = 3
+      Width = 96
+      Height = 13
+      Caption = 'GlobalSpeed: 0 KB/s'
+      Visible = False
+    end
   end
   object PageControl1: TPageControl
     AlignWithMargins = True
     Left = 0
-    Top = 191
+    Top = 211
     Width = 304
     Height = 155
     Margins.Left = 0
@@ -315,10 +323,6 @@ object FormSettings: TFormSettings
     StyleElements = [seFont, seClient]
     object TabSheet1: TTabSheet
       Caption = 'Default Settings'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object CheckBox_AutoLoadDevices: TCheckBox
         AlignWithMargins = True
         Left = 15
@@ -565,21 +569,12 @@ object FormSettings: TFormSettings
       end
     end
   end
-  object IdHTTP1: TIdHTTP
-    AllowCookies = True
-    ProxyParams.BasicAuthentication = False
-    ProxyParams.ProxyPort = 0
-    Request.ContentLength = -1
-    Request.ContentRangeEnd = -1
-    Request.ContentRangeStart = -1
-    Request.ContentRangeInstanceLength = -1
-    Request.Accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-    Request.BasicAuthentication = False
-    Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
-    Request.Ranges.Units = 'bytes'
-    Request.Ranges = <>
-    HTTPOptions = [hoForceEncodeParams]
-    Left = 92
-    Top = 344
+  object ProgressBarDownload: TProgressBar
+    Left = 52
+    Top = 385
+    Width = 110
+    Height = 17
+    TabOrder = 3
+    Visible = False
   end
 end

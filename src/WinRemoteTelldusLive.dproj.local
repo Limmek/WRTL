@@ -1,23 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
+    <Transaction>1899-12-30 00:00:00.000.971,=C:\Users\jim_a\Documents\GitHub\WRTL\src\ssleay32.dll</Transaction>
     <Transaction>1899-12-30 00:00:00.000.541,C:\Users\jim_a\Documents\GitHub\WRTL\src\ssleay32.dll=</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.653,=C:\Users\jim_a\Documents\GitHub\WRTL\src\ssleay32.dll</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.646,C:\Users\jim_a\Documents\GitHub\WRTL\src\ssleay32.dll=</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.913,=C:\Users\jim_a\Documents\GitHub\WRTL\src\libeay32.dll</Transaction>
     <Transaction>1899-12-30 00:00:00.000.367,C:\Users\jim_a\Documents\GitHub\WRTL\src\libeay32.dll=</Transaction>
-    <Transaction>2017-03-12 20:06:56.913,=C:\Users\jim_a\Documents\GitHub\WRTL\src\libeay32.dll</Transaction>
-    <Transaction>2017-03-12 20:06:56.971,=C:\Users\jim_a\Documents\GitHub\WRTL\src\ssleay32.dll</Transaction>
-    <Transaction>2017-03-12 20:16:22.628,C:\Users\jim_a\Documents\GitHub\WRTL\src\libeay32.dll=</Transaction>
-    <Transaction>2017-03-12 20:16:22.645,=C:\Users\jim_a\Documents\GitHub\WRTL\src\libeay32.dll</Transaction>
-    <Transaction>2017-03-12 20:16:22.646,C:\Users\jim_a\Documents\GitHub\WRTL\src\ssleay32.dll=</Transaction>
-    <Transaction>2017-03-12 20:16:22.653,=C:\Users\jim_a\Documents\GitHub\WRTL\src\ssleay32.dll</Transaction>
-  </Transactions>  <ProjectSortOrder AutoSort="0" SortType="0">
+    <Transaction>1899-12-30 00:00:00.000.645,=C:\Users\jim_a\Documents\GitHub\WRTL\src\libeay32.dll</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.628,C:\Users\jim_a\Documents\GitHub\WRTL\src\libeay32.dll=</Transaction>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
     <File Path="Functions.pas"/>
-    <File Path="libeay32.dll"/>
     <File Path="MainForm.pas"/>
     <File Path="MainForm.dfm"/>
     <File Path="Procedures.pas"/>
     <File Path="SettingsForm.pas"/>
     <File Path="SettingsForm.dfm"/>
     <File Path="SettingsTelldusLive.pas"/>
-    <File Path="ssleay32.dll"/>
   </ProjectSortOrder>
 </BorlandProject>

@@ -1,6 +1,6 @@
 program WinRemoteTelldusLive;
 
-{$R *.dres}
+
 
 uses
   Vcl.Forms,
