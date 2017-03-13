@@ -59,6 +59,7 @@ type
     ComboBox8: TComboBox;
     GroupBox1: TGroupBox;
     GroupBox2: TGroupBox;
+    GroupBox_Schedule: TGroupBox;
     procedure FormCreate(Sender: TObject);
     procedure OnMinimize(Sender:TObject);
     procedure TrayIcon1DblClick(Sender: TObject);
