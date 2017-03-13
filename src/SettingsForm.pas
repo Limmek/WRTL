@@ -114,6 +114,8 @@ begin
 
   FClient := THTTPClient.Create;
   FClient.OnReceiveData := ReceiveDataEvent;
+
+
 end;
 
 procedure TFormSettings.ImageLocalFolderClick(Sender: TObject);
@@ -274,11 +276,11 @@ var
   LSize: Int64;
 begin
   bakName := ChangeFileExt(Application.ExeName, '.old');
+  LFileName := Application.ExeName;
   if FileExists(bakName) then
     DeleteFile(bakName);
   RenameFile (Application.ExeName, bakName);
-  CopyFile(PChar(LocalAppDataConfigPath + Application.ExeName), PChar(Application.ExeName),true);
-  LFileName := TPath.Combine(ExtractFilePath(Application.ExeName), Application.ExeName);
+  //CopyFile(PChar(Application.ExeName), PChar(LocalAppDataConfigPath + Application.ExeName),true);
   try
     FAsyncResponse := nil;
     URL := DOWNLOAD_URL;
@@ -327,9 +329,12 @@ begin
     FDownloadStream := nil;
     ProgressBarDownload.Position := 100;
     LabelCheckForUpdate.Enabled := True;
-    ShellExecute(FormMain.Handle, 'runas', PChar(Application.ExeName), PChar(ExtractFilePath(Application.ExeName)), nil, SW_NORMAL);
+    ShellExecute(Handle, 'runas', PChar(Application.ExeName), PChar(ExtractFilePath(Application.ExeName)), nil, SW_NORMAL);
     Application.Terminate;
+    Close;
+    ExitProcess(0);
   end;
+
 end;
 
 procedure TFormSettings.ReceiveDataEvent(const Sender: TObject; AContentLength, AReadCount: Int64;

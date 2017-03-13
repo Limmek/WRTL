@@ -402,16 +402,15 @@ var
 begin
   appPath := ExtractFilePath(Application.ExeName);
   bakName := ChangeFileExt(Application.ExeName, '.old');
-  if FileExists(bakName) then
-    DeleteFile(bakName);
-  RenameFile (Application.ExeName, bakName);
-  CopyFile(PChar(LocalAppDataConfigPath + Application.ExeName), PChar(Application.ExeName),true);
   try
-    FormSettings.DownloadNewFile;
+    if FileExists(bakName) then
+    DeleteFile(bakName);
+    RenameFile (Application.ExeName, bakName);
+    CopyFile(PChar(LocalAppDataConfigPath + Application.ExeName), PChar(Application.ExeName),true);
   finally
-  // restart and shutdown old session
-  ShellExecute(Application.Handle, 'runas', PChar(Application.ExeName), PChar(ExtractFilePath(Application.ExeName)), nil, SW_NORMAL);
-  Application.Terminate;
+    // restart and shutdown old session
+    ShellExecute(Application.Handle, 'runas', PChar(Application.ExeName), PChar(ExtractFilePath(Application.ExeName)), nil, SW_NORMAL);
+    Application.Terminate;
   end;
 end;
 

@@ -5,7 +5,7 @@ interface
 uses SettingsTelldusLive,
 Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.UITypes,
 Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Menus,
-shlobj, MainForm, SettingsForm, Registry, Inifiles, winInet, System.Net.HttpClient;
+shlobj, MainForm, SettingsForm, Registry, Inifiles, winInet, System.Net.HttpClient, TlHelp32;
 
 function GetAppVersionStr: string;
 
@@ -25,7 +25,10 @@ function MyMessageDlg(CONST Msg: string; DlgTypt: TmsgDlgType; button: TMsgDlgBu
   Caption: ARRAY OF string; dlgcaption: string): Integer;
 function CheckVersion(const AURL: string): string;
 
+
 implementation
+
+
 
 function CheckVersion(const AURL: string): string;
 var
