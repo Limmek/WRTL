@@ -608,7 +608,7 @@ end;
 
 procedure TFormMain.PageControl2Change(Sender: TObject);
 begin
-  if TabSheetHotKey.Visible and FormSettings.CheckBoxEnableHotkeys.Enabled then begin
+  if TabSheetHotKey.Visible and not FormSettings.CheckBoxEnableHotkeys.Checked then begin
     Panel2.Caption := 'Hotkeys are disabled!';
   end else
     Panel2.Caption := '';

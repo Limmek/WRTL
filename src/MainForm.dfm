@@ -157,10 +157,6 @@ object FormMain: TFormMain
       OnChange = PageControl2Change
       object TabSheetConsole: TTabSheet
         Caption = 'Console'
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Memo1: TMemo
           AlignWithMargins = True
           Left = 5

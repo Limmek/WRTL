@@ -35,7 +35,6 @@ Procedure ShowChoiseMessage(fixedID,fixedName:String);
 
 procedure AddHotKeyEnable(Handle:HWND; HotKey:Integer);
 procedure AddHotKeyDisable(Handle:HWND; HotKey:Integer);
-procedure UpdateMyself;
 
 
 implementation
@@ -394,26 +393,6 @@ begin
   end;
 
 end;
-
-
-procedure UpdateMyself;
-var
-  bakName, appPath : string;
-begin
-  appPath := ExtractFilePath(Application.ExeName);
-  bakName := ChangeFileExt(Application.ExeName, '.old');
-  try
-    if FileExists(bakName) then
-    DeleteFile(bakName);
-    RenameFile (Application.ExeName, bakName);
-    CopyFile(PChar(LocalAppDataConfigPath + Application.ExeName), PChar(Application.ExeName),true);
-  finally
-    // restart and shutdown old session
-    ShellExecute(Application.Handle, 'runas', PChar(Application.ExeName), PChar(ExtractFilePath(Application.ExeName)), nil, SW_NORMAL);
-    Application.Terminate;
-  end;
-end;
-
 
 
 end.
