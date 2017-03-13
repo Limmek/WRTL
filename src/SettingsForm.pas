@@ -247,7 +247,7 @@ begin
   CheckVer := trim(CheckVersion(VERSION_URL));
   CurVer := trim(GetAppVersionStr);
   ConsoleMessage('Checking for update..');
-  if not (CheckVer = CurVer) then begin
+  if not (CheckVer <= CurVer) then begin
     ConsoleMessage('Current version: '+CurVer);
     ConsoleMessage('Latest version: '+CheckVer);
     buttonSelected := MyMessageDlg('New version available '+CheckVer, mtCustom, [mbYes, mbNo], ['Update','Run anyway'], Application.Title);
@@ -259,7 +259,11 @@ begin
       ConsoleMessage('Downloading new version '+CheckVer);
       DownloadNewFile;
     end;
+  end else begin
+    ConsoleMessage('Current version: '+CurVer);
+    ConsoleMessage('Latest version: '+CheckVer);
   end;
+
 end;
 
 procedure TFormSettings.LabelGitClick(Sender: TObject);

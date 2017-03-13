@@ -309,7 +309,7 @@ object FormSettings: TFormSettings
     Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alBottom
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
