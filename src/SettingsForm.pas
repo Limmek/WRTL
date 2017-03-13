@@ -242,20 +242,21 @@ end;
 procedure TFormSettings.LabelCheckForUpdateClick(Sender: TObject);
 var
   buttonSelected : Integer;
+  CheckVer, CurVer:String;
 begin
+  CheckVer := trim(CheckVersion(VERSION_URL));
+  CurVer := trim(GetAppVersionStr);
   ConsoleMessage('Checking for update..');
-  if not (trim(CheckVersion(VERSION_URL)) = trim(GetAppVersionStr)) then begin
-    //ConsoleMessage('Current version: '+trim(GetAppVersionStr));
-    //ConsoleMessage('Latest version: '+trim(CheckVersion(VERSION_URL)));
-    //buttonSelected := MessageDlg('New version available '+CheckVersion(VERSION_URL),mtCustom, [mbYes,mbNo], 0);
-    buttonSelected := MyMessageDlg('New version available '+CheckVersion(VERSION_URL), mtCustom, [mbYes, mbNo], ['Update','Run anyway'], Application.Title);
+  if not (CheckVer = CurVer) then begin
+    ConsoleMessage('Current version: '+CurVer);
+    ConsoleMessage('Latest version: '+CheckVer);
+    buttonSelected := MyMessageDlg('New version available '+CheckVer, mtCustom, [mbYes, mbNo], ['Update','Run anyway'], Application.Title);
     if buttonSelected = mrNo    then begin
-      ConsoleMessage('Update aborted!') ;
-      ConsoleMessage(CheckVersion(VERSION_URL));
+      ConsoleMessage('Update aborted!');
     end;
 
     if buttonSelected = mrYes    then begin
-      ConsoleMessage('Downloading new version '+CheckVersion(VERSION_URL));
+      ConsoleMessage('Downloading new version '+CheckVer);
       DownloadNewFile;
     end;
   end;
@@ -290,7 +291,7 @@ begin
     URL := DOWNLOAD_URL;
 
     LResponse := FClient.Head(URL);
-    LSize := 1000000; //LResponse.ContentLength;
+    LSize := LResponse.ContentLength +1000000;
     ConsoleMessage(Format('Head response: %d - %s', [LResponse.StatusCode, LResponse.StatusText]));
     LResponse := nil;
 

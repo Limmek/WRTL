@@ -151,16 +151,12 @@ object FormMain: TFormMain
       Margins.Top = 1
       Margins.Right = 0
       Margins.Bottom = 0
-      ActivePage = TabSheetHotKey
+      ActivePage = TabSheetConsole
       Align = alClient
       TabOrder = 1
       OnChange = PageControl2Change
       object TabSheetConsole: TTabSheet
         Caption = 'Console'
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Memo1: TMemo
           AlignWithMargins = True
           Left = 5
@@ -223,9 +219,9 @@ object FormMain: TFormMain
           ShowCaption = False
           TabOrder = 1
           object Label1: TLabel
-            Left = 203
-            Top = 6
-            Width = 4
+            Left = 207
+            Top = 10
+            Width = 12
             Height = 14
             Caption = ':'
             Font.Charset = DEFAULT_CHARSET
@@ -236,26 +232,38 @@ object FormMain: TFormMain
             ParentFont = False
           end
           object ComboBox1: TComboBox
-            Left = 0
-            Top = 3
-            Width = 140
+            Left = 1
+            Top = 1
+            Width = 160
             Height = 21
+            Margins.Left = 1
+            Margins.Top = 1
+            Margins.Right = 1
+            Margins.Bottom = 0
             TabOrder = 0
           end
           object Button1: TButton
-            Left = 320
-            Top = 2
-            Width = 60
-            Height = 23
-            Caption = 'Add new'
+            Left = 330
+            Top = 1
+            Width = 50
+            Height = 21
+            Margins.Left = 0
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 2
+            Caption = 'Add'
             TabOrder = 6
             OnClick = Button1Click
           end
           object ComboBox4: TComboBox
-            Left = 269
-            Top = 3
+            Left = 280
+            Top = 1
             Width = 50
             Height = 21
+            Margins.Left = 16
+            Margins.Top = 1
+            Margins.Right = 1
+            Margins.Bottom = 0
             TabOrder = 5
             Text = 'ON'
             Items.Strings = (
@@ -263,40 +271,51 @@ object FormMain: TFormMain
               'OFF')
           end
           object ComboBox2: TComboBox
-            Left = 144
-            Top = 3
+            Left = 182
+            Top = 1
             Width = 40
             Height = 21
+            Margins.Left = 1
+            Margins.Top = 1
+            Margins.Right = 1
+            Margins.Bottom = 1
             AutoDropDown = True
             TabOrder = 1
             Text = '12'
           end
           object UpDown1: TUpDown
-            Left = 184
-            Top = 3
-            Width = 18
+            Left = 166
+            Top = 1
+            Width = 16
             Height = 21
             Margins.Left = 5
-            Margins.Right = 5
+            Margins.Right = 15
+            AlignButton = udLeft
             Associate = ComboBox2
             Position = 12
             TabOrder = 2
           end
           object UpDown2: TUpDown
-            Left = 249
-            Top = 3
-            Width = 18
+            Left = 262
+            Top = 1
+            Width = 16
             Height = 21
+            Margins.Left = 0
+            Margins.Right = 0
             Associate = ComboBox3
             DoubleBuffered = False
             ParentDoubleBuffered = False
             TabOrder = 4
           end
           object ComboBox3: TComboBox
-            Left = 209
-            Top = 3
+            Left = 222
+            Top = 1
             Width = 40
             Height = 21
+            Margins.Left = 1
+            Margins.Top = 1
+            Margins.Right = 1
+            Margins.Bottom = 0
             AutoDropDown = True
             TabOrder = 3
             Text = '0'
@@ -325,7 +344,7 @@ object FormMain: TFormMain
             OnClick = ButtonAddHotkeyClick
           end
           object ComboBox7: TComboBox
-            Left = 200
+            Left = 201
             Top = 3
             Width = 65
             Height = 21
