@@ -306,7 +306,7 @@ begin
   inherited;  // We give the form to process the message, if she already has its handler
   Beep;
   for I := 0 to ListBox3.Count do begin
-    if Cardinal(Msg.HotKey) = I then begin
+    if (Cardinal(Msg.HotKey) = I) then begin
       fixedCaption := ExtractText(ListBox3.Items[I],':','/');
       fixedID := StringReplace(fixedCaption,' ','',[rfReplaceAll, rfIgnoreCase]);
       fixedName := ExtractText(ListBox3.Items[I],'/','.');
@@ -326,7 +326,7 @@ begin
   end;
 
   for L := 0 to ListBox4.Count do begin
-    if Cardinal(Msg.HotKey) = (100+L) then begin
+    if (Cardinal(Msg.HotKey) = (100+L)) then begin
       fixedCaption := ExtractText(ListBox4.Items[L],':','/');
       fixedID := StringReplace(fixedCaption,' ','',[rfReplaceAll, rfIgnoreCase]);
       fixedName := ExtractText(ListBox4.Items[L],'/','.');
