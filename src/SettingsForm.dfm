@@ -4,7 +4,7 @@ object FormSettings: TFormSettings
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Settings'
-  ClientHeight = 406
+  ClientHeight = 396
   ClientWidth = 304
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,7 +19,7 @@ object FormSettings: TFormSettings
   TextHeight = 13
   object Label5: TLabel
     Left = 160
-    Top = 195
+    Top = 190
     Width = 124
     Height = 14
     Hint = 'Klick to open'
@@ -38,7 +38,7 @@ object FormSettings: TFormSettings
     Left = 0
     Top = 0
     Width = 304
-    Height = 211
+    Height = 186
     Align = alClient
     BevelOuter = bvNone
     ParentBackground = False
@@ -46,11 +46,11 @@ object FormSettings: TFormSettings
     object GroupBox1: TGroupBox
       AlignWithMargins = True
       Left = 10
-      Top = 2
+      Top = 1
       Width = 284
       Height = 45
       Margins.Left = 10
-      Margins.Top = 2
+      Margins.Top = 1
       Margins.Right = 10
       Margins.Bottom = 0
       Align = alTop
@@ -74,7 +74,7 @@ object FormSettings: TFormSettings
     object GroupBox2: TGroupBox
       AlignWithMargins = True
       Left = 10
-      Top = 49
+      Top = 48
       Width = 284
       Height = 45
       Margins.Left = 10
@@ -102,7 +102,7 @@ object FormSettings: TFormSettings
     object GroupBox3: TGroupBox
       AlignWithMargins = True
       Left = 10
-      Top = 96
+      Top = 95
       Width = 284
       Height = 45
       Margins.Left = 10
@@ -130,7 +130,7 @@ object FormSettings: TFormSettings
     object GroupBox4: TGroupBox
       AlignWithMargins = True
       Left = 10
-      Top = 143
+      Top = 142
       Width = 284
       Height = 45
       Margins.Left = 10
@@ -158,7 +158,7 @@ object FormSettings: TFormSettings
   end
   object Panel2: TPanel
     Left = 0
-    Top = 366
+    Top = 356
     Width = 304
     Height = 40
     Align = alBottom
@@ -292,7 +292,7 @@ object FormSettings: TFormSettings
       ExplicitLeft = 195
     end
     object LabelGlobalSpeed: TLabel
-      Left = 56
+      Left = 50
       Top = 3
       Width = 96
       Height = 13
@@ -301,11 +301,10 @@ object FormSettings: TFormSettings
     end
   end
   object PageControl1: TPageControl
-    AlignWithMargins = True
     Left = 0
-    Top = 211
+    Top = 186
     Width = 304
-    Height = 155
+    Height = 170
     Margins.Left = 0
     Margins.Top = 0
     Margins.Right = 0
@@ -322,12 +321,16 @@ object FormSettings: TFormSettings
     TabOrder = 2
     StyleElements = [seFont, seClient]
     object TabSheet1: TTabSheet
+      AlignWithMargins = True
+      Margins.Left = 10
+      Margins.Top = 0
+      Margins.Right = 10
+      Margins.Bottom = 0
       Caption = 'Default Settings'
       object CheckBox_AutoLoadDevices: TCheckBox
-        AlignWithMargins = True
-        Left = 15
-        Top = 0
-        Width = 266
+        Left = 0
+        Top = 20
+        Width = 276
         Height = 20
         Margins.Left = 15
         Margins.Top = 0
@@ -338,10 +341,9 @@ object FormSettings: TFormSettings
         TabOrder = 0
       end
       object CheckBox_SartWithWindows: TCheckBox
-        AlignWithMargins = True
-        Left = 15
-        Top = 20
-        Width = 266
+        Left = 0
+        Top = 40
+        Width = 276
         Height = 20
         Margins.Left = 15
         Margins.Top = 0
@@ -352,10 +354,9 @@ object FormSettings: TFormSettings
         TabOrder = 1
       end
       object CheckBox_StartMinimized: TCheckBox
-        AlignWithMargins = True
-        Left = 15
-        Top = 40
-        Width = 266
+        Left = 0
+        Top = 60
+        Width = 276
         Height = 20
         Margins.Left = 15
         Margins.Top = 0
@@ -366,10 +367,9 @@ object FormSettings: TFormSettings
         TabOrder = 2
       end
       object CheckBox_WinNotification: TCheckBox
-        AlignWithMargins = True
-        Left = 15
-        Top = 60
-        Width = 266
+        Left = 0
+        Top = 80
+        Width = 276
         Height = 20
         Margins.Left = 15
         Margins.Top = 0
@@ -379,25 +379,23 @@ object FormSettings: TFormSettings
         Caption = 'Enable windows notifications'
         TabOrder = 3
       end
-      object CheckBox_LogToFile: TCheckBox
-        AlignWithMargins = True
-        Left = 15
-        Top = 100
-        Width = 266
+      object CheckBox_AutoUpdate: TCheckBox
+        Left = 0
+        Top = 0
+        Width = 276
         Height = 20
         Margins.Left = 15
         Margins.Top = 0
         Margins.Right = 15
         Margins.Bottom = 0
         Align = alTop
-        Caption = 'Enable logging'
+        Caption = 'Check after update on application start'
         TabOrder = 4
       end
       object CheckBoxEnableHotkeys: TCheckBox
-        AlignWithMargins = True
-        Left = 15
-        Top = 80
-        Width = 266
+        Left = 0
+        Top = 100
+        Width = 276
         Height = 20
         Margins.Left = 15
         Margins.Top = 0
@@ -406,6 +404,19 @@ object FormSettings: TFormSettings
         Align = alTop
         Caption = 'Enable hotkeys'
         TabOrder = 5
+      end
+      object CheckBox_LogToFile: TCheckBox
+        Left = 0
+        Top = 120
+        Width = 276
+        Height = 20
+        Margins.Left = 15
+        Margins.Top = 0
+        Margins.Right = 15
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Enable logging'
+        TabOrder = 6
       end
     end
     object TabSheet2: TTabSheet
@@ -421,7 +432,7 @@ object FormSettings: TFormSettings
         Left = 191
         Top = 3
         Width = 100
-        Height = 104
+        Height = 119
         Margins.Right = 5
         Align = alRight
         AutoSize = True
@@ -496,7 +507,7 @@ object FormSettings: TFormSettings
       object LabelGit: TLabel
         AlignWithMargins = True
         Left = 5
-        Top = 110
+        Top = 125
         Width = 286
         Height = 14
         Margins.Left = 5
@@ -518,14 +529,14 @@ object FormSettings: TFormSettings
       end
       object LabelAuthor: TLabel
         Left = 3
-        Top = 95
+        Top = 110
         Width = 38
         Height = 14
         Caption = 'Author'
       end
       object LabelVersion: TLabel
         Left = 3
-        Top = 110
+        Top = 123
         Width = 40
         Height = 14
         Caption = 'Version'
@@ -535,7 +546,7 @@ object FormSettings: TFormSettings
         Left = 5
         Top = 5
         Width = 198
-        Height = 100
+        Height = 115
         Margins.Left = 5
         Margins.Top = 5
         Margins.Right = 5
@@ -555,7 +566,7 @@ object FormSettings: TFormSettings
       end
       object LabelCheckForUpdate: TLabel
         Left = 3
-        Top = 75
+        Top = 88
         Width = 97
         Height = 16
         Caption = 'Check for update'
@@ -571,9 +582,9 @@ object FormSettings: TFormSettings
   end
   object ProgressBarDownload: TProgressBar
     Left = 52
-    Top = 385
+    Top = 375
     Width = 110
-    Height = 17
+    Height = 18
     TabOrder = 3
     Visible = False
   end

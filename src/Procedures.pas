@@ -239,6 +239,7 @@ begin
     Ini.WriteBool( 'Settings', 'EnableLogging', FormSettings.CheckBox_LogToFile.Checked );
     Ini.WriteBool( 'Settings', 'EnableNotifications', FormSettings.CheckBox_WinNotification.Checked );
     Ini.WriteBool( 'Settings', 'EnableHotkeys', FormSettings.CheckBoxEnableHotkeys.Checked );
+    Ini.WriteBool( 'Settings', 'AutoUpdate', FormSettings.CheckBox_AutoUpdate.Checked );
   finally
     Ini.Free;
   end;
@@ -307,6 +308,14 @@ begin
     end  else  begin
       FormSettings.CheckBoxEnableHotkeys.Checked := False;
       FormMain.TabSheetHotKey.Enabled := False;
+    end;
+
+    if (Ini.ReadBool( 'Settings', 'AutoUpdate', false )) then begin
+      FormSettings.CheckBox_AutoUpdate.Checked := True;
+      //FormSettings.LabelCheckForUpdate.OnClick(Application);
+    end
+    else begin
+      FormSettings.CheckBox_AutoUpdate.Checked := False;
     end;
 
   finally

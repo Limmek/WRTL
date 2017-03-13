@@ -296,6 +296,8 @@ begin
   ComboBox8.Text := ComboBox8.Items[0];
   if FileExists(ChangeFileExt(Application.ExeName, '.old')) then
     DeleteFile(ChangeFileExt(Application.ExeName, '.old'));
+
+
 end;
 
 procedure TFormMain.WMHotKey(var Msg: TWMHotKey);

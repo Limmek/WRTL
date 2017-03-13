@@ -33,7 +33,7 @@ type
     Edit_TOKEN: TEdit;
     CheckBox_WinNotification: TCheckBox;
     ImageLogFile: TImage;
-    CheckBox_LogToFile: TCheckBox;
+    CheckBox_AutoUpdate: TCheckBox;
     Label5: TLabel;
     CheckBoxEnableHotkeys: TCheckBox;
     GroupBox1: TGroupBox;
@@ -43,6 +43,7 @@ type
     LabelCheckForUpdate: TLabel;
     ProgressBarDownload: TProgressBar;
     LabelGlobalSpeed: TLabel;
+    CheckBox_LogToFile: TCheckBox;
     procedure ImageLocalFolderClick(Sender: TObject);
     procedure ImageSaveClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -115,6 +116,8 @@ begin
   FClient := THTTPClient.Create;
   FClient.OnReceiveData := ReceiveDataEvent;
 
+  if FormSettings.CheckBox_AutoUpdate.Checked then
+      FormSettings.LabelCheckForUpdate.OnClick(Self);
 
 end;
 
@@ -242,15 +245,17 @@ var
 begin
   ConsoleMessage('Checking for update..');
   if not (trim(CheckVersion(VERSION_URL)) = trim(GetAppVersionStr)) then begin
-    buttonSelected := MessageDlg('New version available '+CheckVersion(VERSION_URL), mtCustom, [mbYes,mbNo], 0);
-
+    //ConsoleMessage('Current version: '+trim(GetAppVersionStr));
+    //ConsoleMessage('Latest version: '+trim(CheckVersion(VERSION_URL)));
+    //buttonSelected := MessageDlg('New version available '+CheckVersion(VERSION_URL),mtCustom, [mbYes,mbNo], 0);
+    buttonSelected := MyMessageDlg('New version available '+CheckVersion(VERSION_URL), mtCustom, [mbYes, mbNo], ['Update','Run anyway'], Application.Title);
     if buttonSelected = mrNo    then begin
-      ConsoleMessage('Aborted.') ;
+      ConsoleMessage('Update aborted!') ;
       ConsoleMessage(CheckVersion(VERSION_URL));
     end;
 
     if buttonSelected = mrYes    then begin
-      ConsoleMessage(CheckVersion(VERSION_URL));
+      ConsoleMessage('Downloading new version '+CheckVersion(VERSION_URL));
       DownloadNewFile;
     end;
   end;
@@ -280,24 +285,21 @@ begin
   if FileExists(bakName) then
     DeleteFile(bakName);
   RenameFile (Application.ExeName, bakName);
-  //CopyFile(PChar(Application.ExeName), PChar(LocalAppDataConfigPath + Application.ExeName),true);
   try
     FAsyncResponse := nil;
     URL := DOWNLOAD_URL;
 
     LResponse := FClient.Head(URL);
-    LSize := LResponse.ContentLength;
+    LSize := 1000000; //LResponse.ContentLength;
     ConsoleMessage(Format('Head response: %d - %s', [LResponse.StatusCode, LResponse.StatusText]));
     LResponse := nil;
 
     LabelGlobalSpeed.Visible := True;
     ProgressBarDownload.Visible := True;
-    ProgressBarDownload.Max := 100;
+    ProgressBarDownload.Max := LSize;
     ProgressBarDownload.Min := 0;
     ProgressBarDownload.Position := 0;
     LabelGlobalSpeed.Caption := 'Global speed: 0 KB/s';
-
-    ConsoleMessage(Format('Downloading: "%s" (%d Bytes) into "%s"' , [Application.ExeName, LSize, LFileName]));
 
     // Create the file that is going to be dowloaded
     FDownloadStream := TFileStream.Create(LFileName, fmCreate);
@@ -327,8 +329,9 @@ begin
   finally
     FDownloadStream.Free;
     FDownloadStream := nil;
-    ProgressBarDownload.Position := 100;
+    ProgressBarDownload.Position := ProgressBarDownload.Max;
     LabelCheckForUpdate.Enabled := True;
+    Sleep(1000);
     ShellExecute(Handle, 'runas', PChar(Application.ExeName), PChar(ExtractFilePath(Application.ExeName)), nil, SW_NORMAL);
     Application.Terminate;
     Close;
@@ -351,9 +354,10 @@ begin
     procedure
     begin
       LCancel := not LabelCheckForUpdate.Enabled;
-      //ProgressBarDownload.Position := AReadCount;
-      ProgressBarDownload.StepIt();
+      ProgressBarDownload.Position := AReadCount;
+      //ProgressBarDownload.StepIt();
       LabelGlobalSpeed.Caption := Format('Global speed: %d KB/s', [LSpeed div 1024]);
+      FormMain.Panel2.Caption := Format('Global speed: %d KB/s', [LSpeed div 1024]);
     end);
   Abort := LCancel;
 end;
