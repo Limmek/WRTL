@@ -1,7 +1,4 @@
-[![GitHub release](https://img.shields.io/github/release/qubyte/rubidium.svg?style=flat-square)]()
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)]()
-[![Travis](https://img.shields.io/travis/rust-lang/rust.svg?style=flat-square)]()
-
+[![wercker status](https://app.wercker.com/status/239b8d8570384561db65d41067dcbcd8/s/master "wercker status")](https://app.wercker.com/project/byKey/239b8d8570384561db65d41067dcbcd8)
 
 # WRTL - WinRemoteTelldusLive
 Easily control your TelldusLive devices from any computer.
