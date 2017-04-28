@@ -1,4 +1,3 @@
-[![wercker status](https://app.wercker.com/status/239b8d8570384561db65d41067dcbcd8/s/master "wercker status")](https://app.wercker.com/project/byKey/239b8d8570384561db65d41067dcbcd8)
 
 # WRTL - WinRemoteTelldusLive
 Easily control your TelldusLive devices from any computer.
