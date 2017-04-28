@@ -1,3 +1,8 @@
+[![GitHub release](https://img.shields.io/github/release/qubyte/rubidium.svg?style=flat-square)]()
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)]()
+[![Travis](https://img.shields.io/travis/rust-lang/rust.svg?style=flat-square)]()
+
+
 # WRTL - WinRemoteTelldusLive
 Easily control your TelldusLive devices from any computer.
 
